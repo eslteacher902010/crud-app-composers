@@ -1,8 +1,14 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
-const session = require('express-session');
 const app = express();
+const mongoose = require('mongoose');
+const methodOverride = require('method-override');
+const morgan = require('morgan');
+const session = require('express-session');
 
-const authController = require('./controllers/auth');
+
+// const authController = require('./controllers/auth');
 const userController = require('./controllers/users');
 const composerController = require('./controllers/composers');
 const workController = require('./controllers/works');
@@ -10,6 +16,17 @@ const workController = require('./controllers/works');
 const isSignedIn = require('./middleware/is-signed-in.js');
 const passUserToView = require('./middleware/pass-user-to-view.js');
 
+const port = process.env.PORT ? process.env.PORT : '3000';
+
+mongoose.connect(process.env.MONGODB_URI);
+
+mongoose.connection.on('connected', () => {
+  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
+});
+
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
+app.use(morgan('dev'));
 // middleware
 app.use(
   session({
@@ -18,6 +35,8 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+app.use(express.static('public'));
 
 // make user available in views
 app.use(passUserToView);
@@ -30,7 +49,7 @@ app.get('/', (req, res) => {
 });
 
 // controllers
-app.use('/auth', authController);
+// app.use('/auth', authController);
 app.use('/users', userController);
 app.use('/composers', composerController);
 app.use('/works', workController);

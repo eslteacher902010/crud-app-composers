@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= recipe.name %></title>
+    <link rel="stylesheet" href="/style/style.css" />
+
+  </head>
+  <body>
+  <div class="fruit-details">
+    <div>form</div>
+    <h1><%= composer.name %></h1>
+    <img src="/images/<%= composer.image %>" alt="<%= composer.name %>">
+
+
+    <p><strong>Born:</strong> <%= composer.birthDate %></p>
+    <p><strong>Died:</strong> <%= composer.deathYear %></p>
+    <p><strong>Nationality:</strong> <%= composer.nationality %></p>
+    <h3>Biography</h3>
+    <p><%= composer.biography %></p>
+
+    <h2>Notable Works</h2>
+    <ul>
+    <% if (composer.works && composer.works.length) { %>
+        <% composer.works.slice(0, 3).forEach(function(work) { %>
+        <li><a href="/works/<%= work._id %>"><%= work.title %></a></li>
+        <% }) %>
+    <% } else { %>
+        <li>No works listed</li>
+    <% } %>
+    </ul>
+    <a href="/composers">Back to Composers</a>
+    </div>
+  </body>
+</html>

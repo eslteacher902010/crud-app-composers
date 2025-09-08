@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>All Composers</p>
+
+    <% composers.sort((a, b) => a.name.localeCompare(b.name)); %>
+
+    <% if (composers.length) { %>
+      <ul>
+        <% composers.forEach((composer) => { %>
+          <li>
+            <a href="/composer/<%= composer._id %>"><%= composer.name %></a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>There are no composers at this time.</p>
+    <% } %> 
+</body>
+</html>

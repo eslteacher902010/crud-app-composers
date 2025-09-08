@@ -6,11 +6,19 @@ const composerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  birthyear: {
+   image: {
+    type: String,
+    required: false,
+  },
+ sex : {
+    type: String,
+    required: true,
+  },
+  birthYear: {
     type: Number,
     required: true,
   },
-  deathyear: {
+  deathYear: {
     type: Number,
   },
   nationality: {
@@ -20,6 +28,10 @@ const composerSchema = new mongoose.Schema({
   biography: {
     type: String,
   },
+  favoritedBy: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Composer', composerSchema);
