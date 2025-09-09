@@ -1,0 +1,11 @@
+<!-- partials/_navbar.ejs -->
+<nav>
+  <% if (user) { %>
+  <a href="/composers">View all Composers</a>
+  <a href="/works">View all Works</a>
+  <a href="/auth/sign-out">Sign Out</a>
+  <% } else { %>
+  <a href="/auth/sign-up">Sign Up</a>
+  <a href="/auth/sign-in">Sign In</a>
+  <% } %>
+</nav>

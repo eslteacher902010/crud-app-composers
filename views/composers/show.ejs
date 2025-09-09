@@ -3,24 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= recipe.name %></title>
+    <title><%= composer.name || composer.completeName %></title>
     <link rel="stylesheet" href="/style/style.css" />
 
   </head>
   <body>
-  <div class="fruit-details">
-    <div>form</div>
+    <%- include('../partials/_navbar') %>
+
+  <div class="composer-details">
+    <div>
     <h1><%= composer.name %></h1>
-    <img src="/images/<%= composer.image %>" alt="<%= composer.name %>">
+      
+  <img src="<%= composer.portrait %>" alt="composer portrait" />
+    <p><strong>Complete Name:</strong> <%= composer.completeName %><p>
+    <p><strong>Born:</strong> <%= composer.birth %></p>
+    <p><strong>Died:</strong> <%= composer.death %></p>
+
+    <% if (composer.nationality) { %>
+
+  <p><strong>Nationality:</strong> <%= composer.nationality %></p>
+<% } %>
+
+    <% if (composer.sex) { %>
+  <p><strong>Sex:</strong> <%= composer.sex %></p>
+<% } %>
 
 
-    <p><strong>Born:</strong> <%= composer.birthDate %></p>
-    <p><strong>Died:</strong> <%= composer.deathYear %></p>
-    <p><strong>Nationality:</strong> <%= composer.nationality %></p>
+ <% if (composer.biography) { %>
     <h3>Biography</h3>
     <p><%= composer.biography %></p>
+    <% } %>
 
-    <h2>Notable Works</h2>
+<form method="POST" action="/composers">
+  <button type="submit">Add  Composer to Favorites</button>
+</form>
+
+  <h2>Popular Works</h2>
     <ul>
     <% if (composer.works && composer.works.length) { %>
         <% composer.works.slice(0, 3).forEach(function(work) { %>
@@ -30,7 +48,7 @@
         <li>No works listed</li>
     <% } %>
     </ul>
-    <a href="/composers">Back to Composers</a>
+    <a href="/composers/index">Back to Composers</a>
     </div>
   </body>
 </html>

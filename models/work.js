@@ -2,19 +2,30 @@
 const mongoose = require('mongoose');
 
 const workSchema = new mongoose.Schema({
+    apiId: {
+    type: String,
+    required: true,
+  },  
   title: {
     type: String,
     required: true,
   },
-  type: {
+  subtitle: {
     type: String,
-    enum: ['symphony', 'sonata', 'opera', 'concerto', 'other'],
-    required: true,
   },
+  searchterms: {
+    type: String,
+  },
+  popular: {
+    type: String,
+  },
+  recommended: {
+    type: String,
+  },
+  
   composer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Composer',
-    required: true,
   },
   yearComposed: {
     type: Number,
@@ -25,6 +36,9 @@ const workSchema = new mongoose.Schema({
   catalogueNumber: {
     type: String,
   },
+  audioFile: {
+    type: String, 
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Work', workSchema);

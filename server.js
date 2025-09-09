@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 
 
+
 // const authController = require('./controllers/auth');
 const userController = require('./controllers/users');
 const composerController = require('./controllers/composers');
@@ -37,6 +38,7 @@ app.use(
 );
 
 app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
 // make user available in views
 app.use(passUserToView);

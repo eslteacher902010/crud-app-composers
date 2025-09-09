@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     <form>
+  <label for="work-name">Work's Full Title:</label>
+  <input type="text" name="workTitle" id="work-title" />
+  <label for="type">Type of work:</label>
+  <select name="type">
+    <% typeOptions.forEach(function(type) { %>
+        <option value="<%= type.toLowerCase() %>"><%= type %></option>
+    <% }); %>
+    if (selectElement.value === 'other') {
+      otherInputContainer.style.display = 'block';
+    } else {
+      otherInputContainer.style.display = 'none';
+      document.getElementById('otherOption').value = '';
+    }
+  }
+
+</select>
+  <label for="composer">Composer of work:</label>
+    <select name="type">
+    <% composers.forEach(function(composer) { %>
+        <option value="<%= composer.toLowerCase() %>"><%= composer %></option>
+    <% }); %>
+     if (selectElement.value === 'other') {
+      otherInputContainer.style.display = 'block';
+    } else {
+      otherInputContainer.style.display = 'none';
+      document.getElementById('otherOption').value = '';
+    }
+  }
+</select>
+  <label for="year-composed">Year Composed:</label>
+  <input type="text" name="yearComposed" id="year-composed" min="0" />
+  <label for="catalogue-system">Catalogue system:</label>
+      <select name="type">
+    <% catalogueSystems.forEach(function(catalogueSystem) { %>
+        <option value="<%= catalogueSystem.toLowerCase() %>"><%= catalogueSystem %></option>
+    <% }); %>
+     if (selectElement.value === 'other') {
+      otherInputContainer.style.display = 'block';
+    } else {
+      otherInputContainer.style.display = 'none';
+      document.getElementById('otherOption').value = '';
+    }
+  }
+  <label for="catalogue-number">Catalogue Number:</label>
+      <select name="type">
+    <% catalogueNumbers.forEach(function(catalogueNumber) { %>
+        <option value="<%= catalogueNumber.toLowerCase() %>"><%= catalogueNumber %></option>
+    <% }); %>
+     if (selectElement.value === 'other') {
+      otherInputContainer.style.display = 'block';
+    } else {
+      otherInputContainer.style.display = 'none';
+      document.getElementById('otherOption').value = '';
+    }
+  }
+  <button type="submit">Add Work</button>
+</form>
+    
+</body>
+</html>

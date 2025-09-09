@@ -2,28 +2,37 @@
 const mongoose = require('mongoose');
 
 const composerSchema = new mongoose.Schema({
+  apiId: {
+    type: String,
+    required: true,
+  },  
   name: {
+    type: String,
+  
+  },
+  completeName: {
     type: String,
     required: true,
   },
-   image: {
+   portrait: {
     type: String,
-    required: false,
   },
  sex : {
     type: String,
+  },
+ epoch : {
+    type: String,
     required: true,
   },
-  birthYear: {
-    type: Number,
+  birth: {
+    type: String,
     required: true,
   },
-  deathYear: {
-    type: Number,
+  death: {
+    type: String,
   },
   nationality: {
     type: String,
-    required: true,
   },
   biography: {
     type: String,

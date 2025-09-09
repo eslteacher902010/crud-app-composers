@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= recipe.name %></title>
+    <link rel="stylesheet" href="/style/style.css" />
+
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+  <div class="work-details">
+    <div>form
+    <h1><%= recipe.name %></h1>
+
+    <h3>Instructions</h3>
+    <p><%= recipe.instructions %></p>
+
+    <h3>Ingredients</h3>
+    <ul>
+      <% if (recipe.ingredients && recipe.ingredients.length) { %>
+        <% recipe.ingredients.forEach(ing => { %>
+          <li><%= ing %></li>
+        <% }) %>
+      <% } else { %>
+        <li>No ingredients listed</li>
+      <% } %>
+    </ul>
+
+    <a href="/recipes">Back to Recipes</a>
+    </div>
+  </body>
+</html>

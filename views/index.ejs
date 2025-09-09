@@ -6,6 +6,33 @@
     <title>Document</title>
 </head>
 <body>
+    <%- include('partials/_navbar') %>
     <p>Welcome!</p>
+    <form action="/composers/search" method="GET">
+        <input type="text" name="search" id="searchBar"/>
+        <button type="submit">Search</button> 
+    </form>
+    <form action="/composers/search/epoch" method="GET">
+        <select name="epoch"> 
+            <option value="Medieval">Medieval</option>     
+            <option value="Renaissance">Renaissance</option>     
+            <option value="Baroque">Baroque</option>     
+            <option value="Classical">Classical</option>     
+            <option value="Early Romantic">Early Romantic</option>     
+            <option value="Romantic">Romantic</option>     
+            <option value="Late Romantic">Late Romantic</option>     
+            <option value="20th Century">20th Century</option>     
+            <option value="Post-War">Post-War</option>     
+            <option value="21st Century">21st Century</option>     
+        </select> 
+
+        
+        <button type="submit">Search</button> 
+    </form>
+    <form action="/works/search" method="GET">
+     <input type="text" name="search" id="searchBar"/>
+     <button type="submit">Search</button> 
+ </form>
 </body>
 </html>
+

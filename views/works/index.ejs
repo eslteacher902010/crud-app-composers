@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('../partials/_navbar') %>
+    <h1>All Works</h1>
+
+    <% works.sort((a, b) => a.name.localeCompare(b.name)); %>
+
+    <% if (works.length) { %>
+      <ul>
+        <% works.forEach((work) => { %>
+          <li>
+            <a href="/work/<%= work._id %>"><%= composer.name %></a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>There are no works at this time.</p>
+    <% } %> 
+</body>
+</html>

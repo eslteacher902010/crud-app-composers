@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= work.title %></title>
+    <link rel="stylesheet" href="/style/style.css" />
+
+  </head>
+  <body>
+    <%- include('../partials/_navbar') %>
+  <div class="fruit-details">
+   
+    <h1><%= work.title %></h1>
+
+    <p><strong>Type of Music:</strong> <%= work.type %></p>
+    <p><strong>Composer:</strong> <%= work.composer %></p>
+    <p><strong>Year Composed:</strong> <%= work.yearComposed %></p>
+    <p><strong>Catalogue System:</strong> <%= work.catalogueSystem %></p>
+    <p><strong>Catalogue Number:</strong> <%= work.catalogueNumber %></p>
+
+
+    <h2>Notable Works</h2>
+    <ul>
+    <% if (composer.works && composer.works.length) { %>
+        <% composer.works.slice(0, 3).forEach(function(work) { %>
+        <li><a href="/works/<%= work._id %>"><%= work.title %></a></li>
+        <% }) %>
+    <% } else { %>
+        <li>No works listed</li>
+    <% } %>
+    </ul>
+    <a href="/composers">Back to Composers</a>
+    </div>
+  </body>
+</html>
