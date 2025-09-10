@@ -7,19 +7,32 @@
 </head>
 <body>
     <%- include('../partials/_navbar') %>
-    <h1>All Works</h1>
+    <p>All Works</p>
+    <% if (newWork) { %>
+  <div>
+    <p>
+      <a href="/works/<%= newWork.apiId %>">
+        <%= newWork.title %>
+      </a>
+    </p>
+  </div>
+<% } %>
 
-    <% works.sort((a, b) => a.name.localeCompare(b.name)); %>
-
-    <% if (works.length) { %>
-      <ul>
-        <% works.forEach((work) => { %>
-          <li>
-            <a href="/work/<%= work._id %>"><%= composer.name %></a>
-          </li>
+      <% if (works && works.length) { %>
+        <ul>
+          <% works.forEach((work) => { %>
+           <li>
+          <div>
+            <p>
+              <a href="/works/<%= work.id %>">
+                <%= work.title %>
+              </a>
+            </p>
+          </div>
+        </li>
         <% }) %>
       </ul>
-    <% } else { %>
+    <% } else if (!works && !newWork) { %>
       <p>There are no works at this time.</p>
     <% } %> 
 </body>

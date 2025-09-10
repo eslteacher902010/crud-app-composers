@@ -6,64 +6,26 @@
     <title>Document</title>
 </head>
 <body>
-     <form>
-  <label for="work-name">Work's Full Title:</label>
-  <input type="text" name="workTitle" id="work-title" />
-  <label for="type">Type of work:</label>
-  <select name="type">
-    <% typeOptions.forEach(function(type) { %>
-        <option value="<%= type.toLowerCase() %>"><%= type %></option>
-    <% }); %>
-    if (selectElement.value === 'other') {
-      otherInputContainer.style.display = 'block';
-    } else {
-      otherInputContainer.style.display = 'none';
-      document.getElementById('otherOption').value = '';
-    }
-  }
-
-</select>
-  <label for="composer">Composer of work:</label>
-    <select name="type">
-    <% composers.forEach(function(composer) { %>
-        <option value="<%= composer.toLowerCase() %>"><%= composer %></option>
-    <% }); %>
-     if (selectElement.value === 'other') {
-      otherInputContainer.style.display = 'block';
-    } else {
-      otherInputContainer.style.display = 'none';
-      document.getElementById('otherOption').value = '';
-    }
-  }
-</select>
-  <label for="year-composed">Year Composed:</label>
-  <input type="text" name="yearComposed" id="year-composed" min="0" />
-  <label for="catalogue-system">Catalogue system:</label>
-      <select name="type">
-    <% catalogueSystems.forEach(function(catalogueSystem) { %>
-        <option value="<%= catalogueSystem.toLowerCase() %>"><%= catalogueSystem %></option>
-    <% }); %>
-     if (selectElement.value === 'other') {
-      otherInputContainer.style.display = 'block';
-    } else {
-      otherInputContainer.style.display = 'none';
-      document.getElementById('otherOption').value = '';
-    }
-  }
-  <label for="catalogue-number">Catalogue Number:</label>
-      <select name="type">
-    <% catalogueNumbers.forEach(function(catalogueNumber) { %>
-        <option value="<%= catalogueNumber.toLowerCase() %>"><%= catalogueNumber %></option>
-    <% }); %>
-     if (selectElement.value === 'other') {
-      otherInputContainer.style.display = 'block';
-    } else {
-      otherInputContainer.style.display = 'none';
-      document.getElementById('otherOption').value = '';
-    }
-  }
+    <form>
+  <label for="work-title">Title of Work:</label>
+  <input type="text" name="work-title" id="work-title" />
+  <label for="genre">Genre:</label>
+  <input type="text" name="genre" id="genre" />
+  <label for="composer">Composer:</label>
+  <input type="text" name="composer" id="composer" min="0" />
+  <label for="composer">Composer:</label>
+  <input type="text" name="composer" id="composer" min="0" />
+  <label for="yearComposed">Year Composed:</label>
+  <input type="text" name="yearComposed" id="yearComposed" min="0" />
+  <label for="catalogueSystem">Catalogue System(optional):</label>
+  <input type="text" name="catalogueSystem" id="catalogueSystem"/>
+  <label for="catalogueNumber">Catalogue Number(Optional):</label>
+  <input type="text" name="catalogueNumber" id="catalogueNumber"/>
+  <label for="youTube">YouTube Link(Optional):</label>
+  <input type="text" name="youTube" id="youTube"/>
   <button type="submit">Add Work</button>
 </form>
+
     
 </body>
 </html>

@@ -29,10 +29,36 @@
         
         <button type="submit">Search</button> 
     </form>
-    <form action="/works/search" method="GET">
-     <input type="text" name="search" id="searchBar"/>
-     <button type="submit">Search</button> 
- </form>
+
+      <h1>Search Works</h1>
+
+      <form action="/works/search" method="GET">
+        <input type="text" name="search" id="searchBar" placeholder="Beethoven or Symphony 5"/>
+        <button type="submit">Search</button> 
+    </form>
+
+    <h2>Search by Composer + Genre</h2>
+    
+    <form action="/works/search/genre" method="get">
+      <label for="composerId">Composer ID:</label>
+      <input type="text" name="composerId" id="composerId" placeholder="e.g. 145" required />
+
+      <label for="genre">Genre:</label>
+      <select name="genre" id="genre" required>
+        <option value="Chamber">Chamber</option>
+        <option value="Keyboard">Keyboard</option>
+        <option value="Orchestral">Orchestral</option>
+        <option value="Stage">Stage</option>
+        <option value="Vocal">Vocal</option>
+        <option value="Popular">Popular</option>
+        <option value="Recommended">Recommended</option>
+      </select>
+
+      <button type="submit">Search</button>
+    </form>
+
+  
+
 </body>
 </html>
 

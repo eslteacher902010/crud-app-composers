@@ -8,8 +8,11 @@
   </head>
 
   <body>
-    <div class="form-page">
+    <div class="edit-page">
       <h1>Edit Composer</h1>
+
+          <p><strong>Note:</strong>The purpose of this page is to just add more information. Not to change the databases existing information.</p>
+
 
       <form action="/composers/<%= composer.apiId %>?_method=PUT" method="POST">
         <div class="form-group">
@@ -35,7 +38,7 @@
         <button type="submit">Save Changes</button>
       </form>
 
-      <a class="back-link" href="/composers">Back to Composers</a>
+      <a class="back-button" href="/composers">Back to Composers</a>
     </div>
   </body>
 </html>

@@ -20,27 +20,26 @@ router.get('/favorites', isSignedIn, async (req, res) => {
 
 
 //this searches genres and composer 
-router.get('/search/genre', async (req, res) => {
-  console.log(req.query.epoch)
-  const baseUrl = `https://api.openopus.org/work/list/composer/${req.query.composerId}/genre/${req.query.genre}.json`
-
+router.get('/search', async (req, res) => {
+  const query = req.query.q;
+  const url = `https://api.openopus.org/omnisearch/${query}/0.json`;
 
   try {
-    const response = await fetch(baseUrl)
-    const data = await response.json()
+    const data = await (await fetch(url)).json();
+    const works = data.results
+      .filter(r => r.work)
+      .map(r => ({
+        ...r.work,
+        composer: r.composer
+      }));
 
-    const works = data.works.map(w => ({
-      ...w,
-      apiId: w.id,
-    }))
-
-    res.render("works/index", { works, newWorks: null, genre: req.query.search })
-
+    res.render("works/index.ejs", { works, newWorks: null, genre: null });
   } catch (err) {
-    console.log(err)
-    res.redirect('/')
+    console.error(err);
+    res.redirect('/');
   }
-})
+});
+
 
 ///edit
 router.get('/:workId/edit', isSignedIn, async (req, res) => {

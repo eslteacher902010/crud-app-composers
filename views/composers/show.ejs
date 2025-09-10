@@ -37,7 +37,7 @@
 
 <form method="POST" action="/composers/<%= composer.apiId %>/favorites">
    <% if (user && composer.favoritedBy.includes(user._id)) { %>
-  <button type="submit">Remove Composer to Favorites</button>
+  <button type="submit">Remove Composer from Favorites</button>
   <% } else{ %>
     <button type="submit">Add Composer to Favorites</button>
   <% } %>

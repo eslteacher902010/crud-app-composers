@@ -3,34 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= work.title %></title>
+    <title><%= work.title || title.subtitle %></title>
     <link rel="stylesheet" href="/style/style.css" />
 
   </head>
   <body>
     <%- include('../partials/_navbar') %>
-  <div class="fruit-details">
-   
+
+  <div class="work-details">
+    <div>
     <h1><%= work.title %></h1>
+      
+    <p><strong>Title of Work:</strong> <%= work.title %><p>
+    <p><strong>Genre:</strong> <%= work.genre %></p>
 
-    <p><strong>Type of Music:</strong> <%= work.type %></p>
-    <p><strong>Composer:</strong> <%= work.composer %></p>
-    <p><strong>Year Composed:</strong> <%= work.yearComposed %></p>
-    <p><strong>Catalogue System:</strong> <%= work.catalogueSystem %></p>
-    <p><strong>Catalogue Number:</strong> <%= work.catalogueNumber %></p>
+    <% if (work.composer) { %>
+
+  <p><strong>Work:</strong> <%= work.composer %></p>
+<% } %>
+
+    <% if (work.yearComposed) { %>
+  <p><strong>Year Composed:</strong> <%= work.yearComposed %></p>
+<% } %>
 
 
-    <h2>Notable Works</h2>
+ <% if (work.catalogueSystem) { %>
+    <p>Catalogue System (e.g. "K" in Mozart's K.545):</p>
+    <p><%= work.catalogueSystem %></p>
+    <% } %>
+
+ <% if (work.catalogueNumber) { %>
+ <p>Catalogue Number(e.g. the number after the K in Mozart's K. 545):</p>
+    <p><%= work.catalogueNumber %></p>
+    <% } %>
+
+
+ <% if (work.youTube) { %>
+    <p>YouTube Link:</p>
+    <p><%= work.youTube %></p>
+    <% } %>
+
+
+<form method="POST" action="/works/<%= work.apiId %>/favorites">
+   <% if (user && composer.favoritedBy.includes(user._id)) { %>
+  <button type="submit">Remove Work from Favorites</button>
+  <% } else{ %>
+    <button type="submit">Add Work to Favorites</button>
+  <% } %>
+</form>
+
+<% if (user) { %>
+  <a href="/works/<%= work.apiId %>/edit">Edit Work</a>
+<% } %>
+
+  
+
+  <h2>Popular Works</h2>
     <ul>
-    <% if (composer.works && composer.works.length) { %>
-        <% composer.works.slice(0, 3).forEach(function(work) { %>
+    <% if (works && works.length) { %>
+        <% works.slice(0, 3).forEach(function(work) { %>
         <li><a href="/works/<%= work._id %>"><%= work.title %></a></li>
         <% }) %>
     <% } else { %>
         <li>No works listed</li>
     <% } %>
     </ul>
-    <a href="/composers">Back to Composers</a>
+    <a href="/composers/search/epoch?epoch=<%=epoch %>">Back to Search Results</a>
     </div>
   </body>
 </html>
