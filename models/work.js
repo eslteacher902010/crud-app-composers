@@ -22,7 +22,9 @@ const workSchema = new mongoose.Schema({
   recommended: {
     type: String,
   },
-  
+  genre: {
+    type: String,
+  },
   composer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Composer',
@@ -36,7 +38,7 @@ const workSchema = new mongoose.Schema({
   catalogueNumber: {
     type: String,
   },
-  audioFile: {
+  youTube: {
     type: String, 
   }
 }, { timestamps: true });

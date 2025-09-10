@@ -16,8 +16,8 @@
       
   <img src="<%= composer.portrait %>" alt="composer portrait" />
     <p><strong>Complete Name:</strong> <%= composer.completeName %><p>
-    <p><strong>Born:</strong> <%= composer.birth %></p>
-    <p><strong>Died:</strong> <%= composer.death %></p>
+    <p><strong>Born:</strong> <%= composer.birthYear %></p>
+    <p><strong>Died:</strong> <%= composer.deathYear %></p>
 
     <% if (composer.nationality) { %>
 
@@ -34,21 +34,32 @@
     <p><%= composer.biography %></p>
     <% } %>
 
-<form method="POST" action="/composers">
-  <button type="submit">Add  Composer to Favorites</button>
+
+<form method="POST" action="/composers/<%= composer.apiId %>/favorites">
+   <% if (user && composer.favoritedBy.includes(user._id)) { %>
+  <button type="submit">Remove Composer to Favorites</button>
+  <% } else{ %>
+    <button type="submit">Add Composer to Favorites</button>
+  <% } %>
 </form>
+
+<% if (user) { %>
+  <a href="/composers/<%= composer.apiId %>/edit">Edit Composer</a>
+<% } %>
+
+  
 
   <h2>Popular Works</h2>
     <ul>
-    <% if (composer.works && composer.works.length) { %>
-        <% composer.works.slice(0, 3).forEach(function(work) { %>
+    <% if (works && works.length) { %>
+        <% works.slice(0, 3).forEach(function(work) { %>
         <li><a href="/works/<%= work._id %>"><%= work.title %></a></li>
         <% }) %>
     <% } else { %>
         <li>No works listed</li>
     <% } %>
     </ul>
-    <a href="/composers/index">Back to Composers</a>
+    <a href="/composers/search/epoch?epoch=<%=epoch %>">Back to Search Results</a>
     </div>
   </body>
 </html>

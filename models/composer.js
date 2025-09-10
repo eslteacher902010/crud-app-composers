@@ -24,11 +24,11 @@ const composerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  birth: {
+  birthYear: {
     type: String,
     required: true,
   },
-  death: {
+  deathYear: {
     type: String,
   },
   nationality: {

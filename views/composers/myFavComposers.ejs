@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('../partials/_navbar') %>
+    <p>Favorite Composers</p>
+  
+
+      <% if (composers && composers.length) { %>
+        <ul>
+          <% composers.forEach((composer) => { %>
+           <li>
+          <div>
+            <img src="<%= composer.portrait %>" />
+            <p>
+              <a href="/composers/<%= composer.apiId %>">
+                <%= composer.name %>
+              </a>
+            </p>
+          </div>
+        </li>
+        <% }) %>
+      </ul>
+    <% } else if (!composers && !newComposer) { %>
+      <p>There are no composers at this time.</p>
+    <% } %> 
+</body>
+</html>

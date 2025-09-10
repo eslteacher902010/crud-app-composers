@@ -9,8 +9,8 @@ const session = require('express-session');
 
 
 
-// const authController = require('./controllers/auth');
-const userController = require('./controllers/users');
+const authController = require('./controllers/auth');
+const userController = require('./controllers/auth.js');
 const composerController = require('./controllers/composers');
 const workController = require('./controllers/works');
 
@@ -37,6 +37,11 @@ app.use(
   })
 );
 
+  app.use(function(req, res, next) {
+        res.locals.user = req.session.user; // Assuming 'user' is where your user object is stored in the session
+        next();
+    });
+
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
@@ -51,7 +56,7 @@ app.get('/', (req, res) => {
 });
 
 // controllers
-// app.use('/auth', authController);
+app.use('/auth', authController);
 app.use('/users', userController);
 app.use('/composers', composerController);
 app.use('/works', workController);

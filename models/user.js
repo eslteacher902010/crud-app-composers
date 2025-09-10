@@ -1,4 +1,5 @@
 // models/user.js
+const mongoose = require('mongoose');
 
 const collectionSchema = new mongoose.Schema({
   composers: {
