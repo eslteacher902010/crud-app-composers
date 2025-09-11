@@ -1,3 +1,7 @@
+body {
+  padding-top: 50px !important;
+}
+
 .crazy-text {
   font-size: 1.5rem;
   font-weight: bold;
@@ -15,8 +19,9 @@
   background-image: url("/images/SL_123119_26540_42.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 100% 30%;  /* ✅ shift the focus point to the right */
+  background-position: 100% 30%; 
   min-height: 100vh;
+  padding-top: 100px;
 }
 
 
@@ -24,23 +29,24 @@
   background-image: url("/images/9624.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 100% 30%;  /* ✅ shift the focus point to the right */
+  background-position: 100% 30%;
   min-height: 100vh;
+  padding-top: 100px;
 }
 .sparkly-classical {
   background-image: url("/images/musbackround1_11.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 100% 30%;  /* ✅ shift the focus point to the right */
-  min-height: 100vh;
+  background-position: 100% 30%;  
+  padding-top: 100px;
 }
 
 .sign-in {
   font-size: 2rem;
   color: black;
   text-shadow:
-    2px 2px 6px rgba(0,0,0,0.8),   /* strong dark shadow */
-    -2px -2px 6px rgba(255,255,255,0.3); /* faint highlight */
+    2px 2px 6px rgba(0,0,0,0.8),  
+    -2px -2px 6px rgba(255,255,255,0.3); 
 }
 
 .sign-up{
@@ -78,38 +84,36 @@
       box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     }
 
-   /* Whole edit page wrapper */
+
 .edit-page {
   max-width: 700px;
   margin: 40px auto;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.9); /* light box over your bg */
+  background: rgba(255, 255, 255, 0.9); 
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Headings inside the edit page */
+
 .edit-page h1 {
   margin-bottom: 20px;
   font-size: 2rem;
   text-align: center;
 }
 
-/* Paragraph notes */
+
 .edit-page p {
   margin-bottom: 20px;
   font-style: italic;
   color: #444;
 }
 
-/* Each form-group */
 .form-group {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
 
-/* Labels */
 .form-group label {
   font-weight: bold;
   margin-bottom: 6px;
@@ -206,23 +210,86 @@
 }
 
 .mango-button:hover {
-  background: #d62828;             /* slightly darker red */
-  transform: scale(1.05);          /* pop effect */
+  background: #d62828;            
+  transform: scale(1.05);          
 }
 
 .mango-button:active {
-  transform: scale(0.97);          /* press down */
+  transform: scale(0.97);       
 }
 
 .work-item {
-  border: 1px solid rgba(0, 0, 0, 0.2); /* light gray border */
+  border: 1px solid rgba(0, 0, 0, 0.2); 
   border-radius: 6px;
   padding: 10px 15px;
-  margin: 10px 0;                      /* spacing between works */
-  background: rgba(255, 255, 255, 0.8); /* light background over fiery bg */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  margin: 10px 0;                    
+  background: rgba(255, 255, 255, 0.8); 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .work-item p {
-  margin: 0; /* remove default p spacing */
+  margin: 0; 
+}
+
+.favs-page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.9); 
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+.favs-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: blue;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.2); 
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin: 10px 0;                    
+  background: rgba(255, 255, 255, 0.8); 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navvy-snazzy{
+  height: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  width: 100%; 
+  position: fixed;  
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  align-items: center;      
+}
+
+.navvy-snazzy ul {
+  margin: 0;
+  padding: 0;
+  height: 100%;         
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  list-style: none;
+  gap: 50px;             
+  width: 100%;            
+}
+
+.navvy-snazzy li {
+  margin: 0 20px;
+   padding: 0 20px;
+}
+
+.navvy-snazzy a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navvy-snazzy:hover {
+  color: gold; /* highlight on hover */
 }

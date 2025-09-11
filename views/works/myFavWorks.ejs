@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css" />
   <title>My Favorite Works</title>
 </head>
 <body>
+  <section class="treble">
   <%- include('../partials/_navbar') %>
-  <h1>All My Favorite Works</h1>
+  <p class="favs-text">All My Favorite Works</p>
 
   <% if (works && works.length) { %>
-    <ul>
+    <ul class="favs-page">
       <% works.forEach((work) => { %>
-        <li>
-          <div>
+        <li class="favs-page">
+          <div class="favs-page">
             <p>
               <a href="/works/<%= work.apiId %>">
                 <%= work.title %>
@@ -33,5 +35,7 @@
   <% } else { %>
     <p>You don’t have any favorite works yet.</p>
   <% } %>
+
+  </section>
 </body>
 </html>

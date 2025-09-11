@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css" />
   <title>My Favorite Composers</title>
 </head>
 <body>
+    <section class="treble">
   <%- include('../partials/_navbar') %>
-  <h1>All My Favorite Composers</h1>
+  <p class="favs-text">All My Favorite Composers</p>
 
   <% if (composers && composers.length) { %>
-    <ul>
+    <ul class="favs-page">
       <% composers.forEach((composer) => { %>
-        <li>
+        <li class="favs-page">
           <div>
             <% if (composer.portrait) { %>
               <img src="<%= composer.portrait %>" alt="<%= composer.name %> portrait" />
@@ -29,5 +31,6 @@
   <% } else { %>
     <p>You don’t have any favorite composers yet.</p>
   <% } %>
+  </section>
 </body>
 </html>

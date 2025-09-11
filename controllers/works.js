@@ -54,6 +54,23 @@ router.get('/search', async (req, res) => {
   }
 });
 
+//genre and artist 
+router.get('/search/genre', async (req, res) => {
+  const { composerId, genre } = req.query;
+  const url = `https://api.openopus.org/work/list/composer/${composerId}/genre/${genre}.json`;
+
+  try {
+    const data = await (await fetch(url)).json();
+    const works = data.works || [];
+
+    res.render("works/index.ejs", { works, genre,offset: 0, search: null });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/');
+  }
+});
+
+
 
 
 ///edit

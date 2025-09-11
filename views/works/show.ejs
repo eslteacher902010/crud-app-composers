@@ -20,8 +20,7 @@
     <p><strong>Genre:</strong> <%= work.genre %></p>
 
     <% if (work.composer) { %>
-
-  <p><strong>Work:</strong> <%= work.composer %></p>
+  <p><strong>Composer:</strong> <%= work.composer.completeName %></p>
 <% } %>
 
     <% if (work.yearComposed) { %>

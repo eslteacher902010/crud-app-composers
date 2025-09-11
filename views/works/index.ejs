@@ -17,12 +17,15 @@
            <li class="work-item">
           <div>
             <p>
-              <a href="/works/<%=work.id %>">
-                <%= work.title %>
+             <a href="/works/<%= work.id || work.apiId %>">
+                  <%= work.title %>
+                </a>
+            <% if (work.composer) { %>
+              By <a href="/composers/<%= work.composer.id || work.composer.apiId %>">
+                <%= work.composer.complete_name || work.composer.completeName %>
               </a>
-                By <a href="/composers/<%= work.composer.id %>">
-                <%= work.composer.complete_name %> </a>
-            </p>
+            <% } %>
+          </p>
           </div>
         </li>
         <% }) %>

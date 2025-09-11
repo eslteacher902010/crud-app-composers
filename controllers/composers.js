@@ -97,11 +97,23 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 
 // show page but not for myfavs 
 router.get('/:composerId', async (req, res) => {
-    const baseUrl = `https://api.openopus.org/composer/list/ids/${req.params.composerId}.json`;
-
   try {
-    const data= await (await fetch(baseUrl)).json()
-    const composer = data.composers[0]
+    let apiId = req.params.composerId;
+
+    // If it's a Mongo _id, look up the composer to get its apiId
+    const localComposer = await Composer.findById(req.params.composerId);
+    if (localComposer) {
+      apiId = localComposer.apiId;
+    }
+
+    const baseUrl = `https://api.openopus.org/composer/list/ids/${apiId}.json`;
+    const data = await (await fetch(baseUrl)).json();
+
+    if (!data.composers || !data.composers.length) {
+      return res.redirect('/');
+    }
+
+    const composer = data.composers[0];
     composer.apiId= composer.id
     composer.completeName=composer.complete_name
     composer.birthYear= new Date (composer.birth).getFullYear()
