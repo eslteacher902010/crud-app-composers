@@ -6,6 +6,38 @@ const Composer=require("../models/composer")
 const UserWork = require('../models/userWork');
 const isSignedIn = require('../middleware/is-signed-in');
 
+///experimental
+///new stuff-new work
+
+router.get('/new', isSignedIn, async (req, res) => {
+  const composers = await Composer.find();
+  res.render('works/new.ejs', { composers });
+});
+
+//create new work
+router.post('/', isSignedIn, async (req, res) => {
+  try {
+    const work = await Work.create({
+      title: req.body.title,
+      subtitle: req.body.subtitle || '',
+      yearComposed: req.body.yearComposed || null,
+      catalogueSystem: req.body.catalogueSystem || '',
+      catalogueNumber: req.body.catalogueNumber || '',
+      genre: req.body.genre || '',
+      youTube: req.body.youTube || '',
+      composer: req.body.composerId || null,  
+      source: "local" 
+    });
+
+    res.redirect(`/works/${work._id}`);
+  } catch (err) {
+    console.error("Error creating work:", err);
+    res.redirect('/works');
+  }
+});
+
+
+
 //my fav works
 router.get('/favorites', isSignedIn, async (req, res) => {
   try {
@@ -112,7 +144,7 @@ router.get('/:workId', async (req, res) => {
     const baseUrl = `https://api.openopus.org/work/detail/${req.params.workId}.json`;
     console.log(baseUrl)
 
-  try {
+  try { ///make a call to the api above
     const data= await (await fetch(baseUrl)).json()
     const work = data.work
     const composer=data.composer
@@ -121,7 +153,7 @@ router.get('/:workId', async (req, res) => {
     if (!w) {
   let c = await Composer.findOne({ apiId: composer.id });
   if (!c) {
-    const composerData = {
+    const composerData = { ///make sure to get all the data before creation --gather the information
       apiId: composer.id,
       name: composer.name,
       completeName: composer.complete_name,
@@ -130,19 +162,19 @@ router.get('/:workId', async (req, res) => {
       deathYear: composer.death ? new Date(composer.death).getFullYear() : null,
       portrait: composer.portrait || null,
     };
-
+    //if there is no composer create the composer in the DB
     const newComposer = await Composer.create(composerData);
     work.composer = newComposer._id;
     c = newComposer;
   } else {
     work.composer = c._id;
   }
-
-  work.apiId = work.id;
+  ///now finish creating the word--
+  work.apiId = work.id; ///make sure that apiId matches work Id
   const newWork = await Work.create(work);
-  let populated = await Work.findById(newWork._id).populate("composer");
+  let populated = await Work.findById(newWork._id).populate("composer"); // Re-fetch the new work and populate its composer reference
   res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
-} else {
+} else {  // If the work already exists in the DB, just fetch it and populate composer
   let populated = await Work.findById(w._id).populate("composer");
   res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
 }
@@ -157,7 +189,6 @@ router.get('/:workId', async (req, res) => {
 
 
 
-// // Create Route: Handles the submission of the new author form
 // router.post('/', async (req, res) => {
 //   try {
 //     const newWork = await Work.create({ name: req.body.name });
@@ -229,7 +260,7 @@ router.put('/:workId', async (req, res) => {
           );
         }
       } else {
-        // Text → use OpenOpus omnisearch
+        //go back to opus if probblems
         const apiUrl = `https://api.openopus.org/omnisearch/${encodeURIComponent(input)}/0.json`;
         const data = await (await fetch(apiUrl)).json();
         const c = data.results && data.results.find(r => r.composer)?.composer;
@@ -237,7 +268,7 @@ router.put('/:workId', async (req, res) => {
           composer = await Composer.findOneAndUpdate(
             { apiId: c.id.toString() },
             {
-              apiId: c.id.toString(),
+              apiId: c.id.toString(), //so we can search it
               name: c.name,
               completeName: c.complete_name,
               epoch: c.epoch,
@@ -257,7 +288,7 @@ router.put('/:workId', async (req, res) => {
 
     const work = await Work.findOneAndUpdate(
       { apiId: req.params.workId },
-      updates,
+      updates,  //updates has the new values
       { new: true }
     ).populate("composer");
 
@@ -269,7 +300,5 @@ router.put('/:workId', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
-
-
 
 module.exports = router;

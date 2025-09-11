@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="/css/style.css" />
+  <title>Document</title>
 </head>
 <body>
-    <form>
-  <label for="composer-name">Composer's Full Name:</label>
-  <input type="text" name="composerName" id="composer-name" />
-  <label for="image">Composer Image:</label>
-  <input type="image" src="img_submit.gif" alt="Submit" width="48" height="48">
-  <label for="sex">Sex:</label>
-  <input type="text" name="sex" id="sex" />
-  <label for="birth-year">Birth Year or Date:</label>
-  <input type="number" name="birthYear" id="birth-year" min="0" />
+  <section class="treble">
+    <%- include('../partials/_navbar') %>
+
+<!-- views/composers/new.ejs -->
+<h1>Add a New Composer</h1>
+<form action="/composers" method="POST">
+  <div>
+    <label for="name">Short Name:</label>
+    <input type="text" id="name" name="name" required />
+  </div>
+  <div>
+    <label for="completeName">Full Name:</label>
+    <input type="text" id="completeName" name="completeName" />
+  </div>
+  <div>
+    <label for="epoch">Epoch:</label>
+    <input type="text" id="epoch" name="epoch" />
+  </div>
+  <div>
+    <label for="birthYear">Birth Year:</label>
+    <input type="number" id="birthYear" name="birthYear" />
+  </div>
+  <div>
+    <label for="deathYear">Death Year:</label>
+    <input type="number" id="deathYear" name="deathYear" />
+  </div>
+  <div>
+    <label for="portrait">Portrait URL:</label>
+    <input type="text" id="portrait" name="portrait" />
+  </div>
   <button type="submit">Add Composer</button>
 </form>
-
-    
+</section>
 </body>
 </html>

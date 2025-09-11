@@ -37,6 +37,10 @@ const composerSchema = new mongoose.Schema({
   biography: {
     type: String,
   },
+  source: {
+    type: String,
+    default:"api"
+  },
   favoritedBy: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"

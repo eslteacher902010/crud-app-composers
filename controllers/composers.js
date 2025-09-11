@@ -4,6 +4,33 @@ const Composer=require("../models/composer")
 const UserComposer = require('../models/userComposer');
 const isSignedIn = require('../middleware/is-signed-in');
 
+
+///experiment
+// NEW composer form
+router.get('/new', isSignedIn, (req, res) => {
+  res.render('composers/new.ejs'); 
+});
+
+// CREATE composer (manual add, not API)
+router.post('/', isSignedIn, async (req, res) => {
+  try {
+    const composer = await Composer.create({
+      name: req.body.name,
+      completeName: req.body.completeName,
+      epoch: req.body.epoch,
+      birthYear: req.body.birthYear,
+      deathYear: req.body.deathYear || null,
+      portrait: req.body.portrait || null,
+      source: "local" 
+    });
+    res.redirect(`/composers/${composer._id}`); 
+  } catch (err) {
+    console.error(err);
+    res.redirect('/composers');
+  }
+});
+
+
 //my fav composers
 router.get('/favorites', isSignedIn, async (req, res) => {
   console.log("hello")
@@ -101,9 +128,9 @@ router.get('/:composerId', async (req, res) => {
   try {
     const { composerId } = req.params;
     let composer, works;
-
+    //this gets complicated because i'm trying to make sure the composer really shows up
     if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
-      // It's a MongoDB _id
+      // It's a MongoDB _id--it has letters
       composer = await Composer.findById(composerId);
       if (!composer) return res.redirect('/');
 
@@ -114,7 +141,7 @@ router.get('/:composerId', async (req, res) => {
       works = worksData.works || [];
 
     } else {
-      // It's an OpenOpus API id
+      // It's an OpenOpus API id--no letters
       const baseUrl = `https://api.openopus.org/composer/list/ids/${composerId}.json`;
       const data = await (await fetch(baseUrl)).json();
       if (!data.composers || !data.composers.length) return res.redirect('/');
@@ -125,7 +152,7 @@ router.get('/:composerId', async (req, res) => {
       composer = await Composer.findOneAndUpdate(
         { apiId: apiComposer.id },
         {
-          $set: {
+          $set: { ///only change the fields i'm giving you
             name: apiComposer.name,
             completeName: apiComposer.complete_name,
             birthYear: new Date(apiComposer.birth).getFullYear(),
@@ -137,7 +164,7 @@ router.get('/:composerId', async (req, res) => {
         { new: true, upsert: true }
       );
 
-      // fetch by saved ID
+      // fetch by saved ID--safety
       const worksRes = await fetch(
         `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
       );
@@ -191,6 +218,7 @@ router.post('/:composerId/favorites', isSignedIn, async (req, res) => {
 });
 
 
+
 ///updating
 
 router.put('/:composerId', async (req, res) => {
@@ -235,7 +263,6 @@ router.put('/:composerId', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
-
 
 
 

@@ -38,8 +38,11 @@
         <% }) %>
       </ul>
     <% } else if (!composers && !newComposer) { %>
-      <p>There are no composers at this time.</p>
-    <% } %> 
+      <p>No composer found in OpenOpus.</p>
+      <a href="/composers/new?name=<%= search %>">Add this composer manually</a>
+    <% } %>
+
   </section>
 </body>
 </html>
+
