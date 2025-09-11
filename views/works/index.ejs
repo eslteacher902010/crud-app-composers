@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/style.css" />
-    <title>All Works</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>All Works</title>
 </head>
 <body>
- <section class="fiery-classical">
+  <section class="fiery-classical">
     <%- include('../partials/_navbar') %>
     <p>Search Results</p>
    
-      <% if (works && works.length) { %>
-        <ul>
-          <% works.forEach((work) => { %>
-           <li class="work-item">
-          <div>
-            <p>
-             <a href="/works/<%= work.id || work.apiId %>">
+    <% if (works && works.length) { %>
+      <ul class="works-list">
+        <% works.forEach((work) => { %>
+          <li class="work-item">
+            <div>
+              <p class="work-text">
+                <a href="/works/<%= work.id || work.apiId %>" class="work-link">
                   <%= work.title %>
                 </a>
-            <% if (work.composer) { %>
-              By <a href="/composers/<%= work.composer.id || work.composer.apiId %>">
-                <%= work.composer.complete_name || work.composer.completeName %>
-              </a>
-            <% } %>
-          </p>
-          </div>
-        </li>
+                <% if (work.composer) { %>
+                  By 
+                  <a href="/composers/<%= work.composer.id || work.composer.apiId %>" class="composer-link">
+                    <%= work.composer.complete_name || work.composer.completeName %>
+                  </a>
+                <% } %>
+              </p>
+            </div>
+          </li>
         <% }) %>
       </ul>
     <% } else if (!works && !newWork) { %>
       <p>There are no works at this time.</p>
     <% } %> 
 
-    <form action="/works/search" method="GET">
-      <input type="hidden" name="offset" value="<%= offset+20 %>"/>
-      <input type="hidden" name="search" value="<%= search %>"/>
+    <!-- Search input -->
+    <form action="/works/search" method="GET" class="search-form">
+      <input 
+        type="text" 
+        name="search" 
+        value="<%= search %>" 
+        class="search-box" 
+        placeholder="Search works..." 
+      />
+      <input type="hidden" name="offset" value="<%= offset+20 %>" />
       <button type="submit">Next</button>
     </form>
-</section>
+  </section>
 </body>
 </html>

@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <link rel="stylesheet" href="/css/style.css" />
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>All Composers</title>
 </head>
 <body>
   <section class="fiery-classical">
     <%- include('../partials/_navbar') %>
     <p>All Composers</p>
-    <% if (newComposer) { %>
-  <div>
-    <img src="<%= newComposer.portrait %>" />
-    <p>
-      <a href="/composers/<%= newComposer.apiId %>">
-        <%= newComposer.name %>
-      </a>
-    </p>
-  </div>
-<% } %>
 
-      <% if (composers && composers.length) { %>
-        <ul>
-          <% composers.forEach((composer) => { %>
-           <li>
-          <div>
-            <img src="<%= composer.portrait %>" />
-            <p>
-              <a href="/composers/<%= composer.id %>">
-                <%= composer.name %>
-              </a>
-            </p>
-          </div>
-        </li>
+    <% if (newComposer) { %>
+      <div class="composer-card">
+        <img src="<%= newComposer.portrait %>" alt="<%= newComposer.name %>" />
+        <p class="composer-text">
+          <a href="/composers/<%= newComposer.apiId %>" class="composer-link">
+            <%= newComposer.name %>
+          </a>
+        </p>
+      </div>
+    <% } %>
+
+    <% if (composers && composers.length) { %>
+      <ul class="composer-list">
+        <% composers.forEach((composer) => { %>
+          <li class="composer-item">
+            <div class="composer-card">
+              <img src="<%= composer.portrait %>" alt="<%= composer.name %>" />
+              <p class="composer-text">
+                <a href="/composers/<%= composer.id %>" class="composer-link">
+                  <%= composer.name %>
+                </a>
+              </p>
+            </div>
+          </li>
         <% }) %>
       </ul>
     <% } else if (!composers && !newComposer) { %>
       <p>There are no composers at this time.</p>
     <% } %> 
-    </section>
+  </section>
 </body>
 </html>
