@@ -293,3 +293,7 @@ body {
 .navvy-snazzy:hover {
   color: gold; /* highlight on hover */
 }
+
+.wonky-search{
+  font-size: 2rem;
+}

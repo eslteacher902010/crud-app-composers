@@ -49,7 +49,7 @@
     <h2>Search By Popular Composer ID + Genre</h2>
 
     <form action="/works/search/genre" method="get">
-     <label for="composerId">Choose a Composer:</label>
+     <label class="wonky-search"  for="composerId"><strong>Choose a Composer:</strong></label>
 <select name="composerId" id="composerId" required>
   <option value="87">Johann (Bach)</option>
   <option value="145">Ludwig (Beethoven)</option>
@@ -78,7 +78,7 @@
 
       
 
-      <label for="genre">Genre:</label>
+      <label class="wonky-search" for="genre"><strong>Genre:</strong></label>
       <select name="genre" id="genre" required>
         <option value="Chamber">Chamber</option>
         <option value="Keyboard">Keyboard</option>
