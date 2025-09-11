@@ -95,46 +95,69 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 });
 
 
+
 // show page but not for myfavs 
 router.get('/:composerId', async (req, res) => {
   try {
-    let apiId = req.params.composerId;
+    const { composerId } = req.params;
+    let composer, works;
 
-    // If it's a Mongo _id, look up the composer to get its apiId
-    const localComposer = await Composer.findById(req.params.composerId);
-    if (localComposer) {
-      apiId = localComposer.apiId;
-    }
+    if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
+      // It's a MongoDB _id
+      composer = await Composer.findById(composerId);
+      if (!composer) return res.redirect('/');
 
-    const baseUrl = `https://api.openopus.org/composer/list/ids/${apiId}.json`;
-    const data = await (await fetch(baseUrl)).json();
+      const worksRes = await fetch(
+        `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
+      );
+      const worksData = await worksRes.json();
+      works = worksData.works || [];
 
-    if (!data.composers || !data.composers.length) {
-      return res.redirect('/');
-    }
-
-    const composer = data.composers[0];
-    composer.apiId= composer.id
-    composer.completeName=composer.complete_name
-    composer.birthYear= new Date (composer.birth).getFullYear()
-    composer.deathYear= new Date (composer.death).getFullYear()
-    const c= await Composer.findOne({apiId:composer.apiId})
-    const baseURL2= `https://api.openopus.org/work/list/composer/${req.params.composerId}/genre/Popular.json`
-    const data2= await (await fetch (baseURL2)).json()
-    console.log(data2)
-    const works = data2.works
-    if (!c) {
-      const newComposer = await Composer.create(composer)
-      res.render("composers/show.ejs", { composer: newComposer, epoch: newComposer.epoch, works,user:req.session.user})
     } else {
-      res.render("composers/show.ejs", { composer: c, epoch: composer.epoch,works,user:req.session.user})
+      // It's an OpenOpus API id
+      const baseUrl = `https://api.openopus.org/composer/list/ids/${composerId}.json`;
+      const data = await (await fetch(baseUrl)).json();
+      if (!data.composers || !data.composers.length) return res.redirect('/');
+
+      const apiComposer = data.composers[0];
+
+      // update or insert the local copy
+      composer = await Composer.findOneAndUpdate(
+        { apiId: apiComposer.id },
+        {
+          $set: {
+            name: apiComposer.name,
+            completeName: apiComposer.complete_name,
+            birthYear: new Date(apiComposer.birth).getFullYear(),
+            deathYear: new Date(apiComposer.death).getFullYear(),
+            epoch: apiComposer.epoch || null,
+            portrait: apiComposer.portrait || null
+          }
+        },
+        { new: true, upsert: true }
+      );
+
+      // fetch by saved ID
+      const worksRes = await fetch(
+        `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
+      );
+      const worksData = await worksRes.json();
+      works = worksData.works || [];
     }
+
+    res.render("composers/show.ejs", { 
+      composer, 
+      epoch: composer.epoch, 
+      works, 
+      user: req.session.user 
+    });
 
   } catch (err) {
     console.log(err);
     res.redirect('/');
   }
 });
+
 
 
 

@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const express = require('express');
 const router = express.Router();
 const Work=require("../models/work")
@@ -7,17 +8,30 @@ const isSignedIn = require('../middleware/is-signed-in');
 
 //my fav works
 router.get('/favorites', isSignedIn, async (req, res) => {
-  const populatedWorks = await Work.find({ favoritedBy: req.session.user._id })
-  .populate("composer");
   try {
-    res.render('works/myFavWorks.ejs', {
-      works: populatedWorks,
+    const populatedWorks = await Work.find({ favoritedBy: req.session.user._id })
+      .populate({
+        path: "composer",
+        model: "Composer", // force populate with Composer model
+        select: "apiId completeName name"
+      })
+      .sort({ yearComposed: -1 })
+      .lean(); // plain JS objects for EJS
+
+    // Debug logging
+    populatedWorks.forEach(work => {
+      console.log("Work:", work.title);
+      console.log("Composer:", work.composer ? work.composer.completeName || work.composer.name : null);
     });
+
+    res.render("works/myFavWorks.ejs", { works: populatedWorks });
   } catch (err) {
-    console.log(err);
-    res.redirect('/works');
+    console.error("Error loading favorites:", err);
+    res.redirect("/works");
   }
 });
+
+
 
 
 //this searches genres and composer 
@@ -137,9 +151,9 @@ router.get('/:workId', async (req, res) => {
   let populated = await Work.findById(newWork._id).populate("composer");
   res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
 } else {
-  res.render("works/show.ejs", { work: w, genre: work.genre, user: req.session.user });
+  let populated = await Work.findById(w._id).populate("composer");
+  res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
 }
-
 
   } catch (err) {
     console.log(err);
@@ -162,20 +176,21 @@ router.get('/:workId', async (req, res) => {
 //   }
 // });
 
-//create the fav list
+// create the fav list
 router.post('/:workId/favorites', isSignedIn, async (req, res) => {
-  const work= await Work.findOne({apiId:req.params.workId})
-  console.log(work)
-  if(!work.favoritedBy.includes(req.session.user._id)){
-    work.favoritedBy.push(req.session.user._id)
-    await work.save()
-  } else{
-    work.favoritedBy.remove(req.session.user._id)
-    await work.save()
-  } 
-  // req.body.favoritedBy = req.session.user._id;
-  // await Composer.create(req.body);
-    res.redirect(`/works/${req.params.workId}`);
+  const work = await Work.findOne({ apiId: req.params.workId });
+  if (!work) return res.redirect('/works');
+
+  const userId = new mongoose.Types.ObjectId(req.session.user._id);
+
+  if (!work.favoritedBy.some(id => id.equals(userId))) {
+    work.favoritedBy.push(userId);
+  } else {
+    work.favoritedBy = work.favoritedBy.filter(id => !id.equals(userId));
+  }
+
+  await work.save();
+  res.redirect(`/works/${req.params.workId}`);
 });
 
 
@@ -208,7 +223,7 @@ router.put('/:workId', async (req, res) => {
       return res.status(404).send('Work not found');
     }
 
-    // Handle user notes if they exist
+    // user notes if they exist
    if (req.body.notes !== undefined || req.body.youTube !== undefined) {
   await UserWork.findOneAndUpdate(
     { user: req.session.user._id, work: work._id },

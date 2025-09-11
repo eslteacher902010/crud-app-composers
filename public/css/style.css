@@ -1,5 +1,5 @@
 body {
-  padding-top: 50px !important;
+  padding-top: 10px !important;
 }
 
 .crazy-text {
@@ -257,7 +257,7 @@ body {
 }
 
 .navvy-snazzy{
-  height: 30px;
+  height: 50px;
   background: rgba(0, 0, 0, 0.6);
   width: 100%; 
   position: fixed;  
@@ -280,7 +280,7 @@ body {
 }
 
 .navvy-snazzy li {
-  margin: 0 20px;
+   margin: 0 20px;
    padding: 0 20px;
 }
 
