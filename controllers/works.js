@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Work=require("../models/work")
+const Composer=require("../models/composer")
 const UserWork = require('../models/userWork');
 const isSignedIn = require('../middleware/is-signed-in');
 
 //my fav works
 router.get('/favorites', isSignedIn, async (req, res) => {
-  console.log("hello")
-  const populatedWorks = await Work.find({favoritedBy: req.session.user._id});
+  const populatedWorks = await Work.find({ favoritedBy: req.session.user._id })
+  .populate("composer");
   try {
     res.render('works/myFavWorks.ejs', {
       works: populatedWorks,
@@ -21,24 +22,38 @@ router.get('/favorites', isSignedIn, async (req, res) => {
 
 //this searches genres and composer 
 router.get('/search', async (req, res) => {
-  const query = req.query.q;
-  const url = `https://api.openopus.org/omnisearch/${query}/0.json`;
-
+  const query = req.query.search; 
+  let offset= 0
+  // if (!query) {
+  //   return res.render("works/index.ejs", { works: [], newWorks: null, genre: null });
+  // }
+  console.log(req.query)
+  if(req.query.offset){
+    offset=req.query.offset
+  }
+  const url = `https://api.openopus.org/omnisearch/${query}/${offset}.json`;
+  console.log(url)
   try {
     const data = await (await fetch(url)).json();
-    const works = data.results
+    const results = data.results || [];
+    
+
+    const works = results
       .filter(r => r.work)
       .map(r => ({
         ...r.work,
         composer: r.composer
       }));
+      console.log(works)
 
-    res.render("works/index.ejs", { works, newWorks: null, genre: null });
+
+    res.render("works/index.ejs", { works, newWorks: null, genre: null, offset, search:req.query.search});
   } catch (err) {
     console.error(err);
     res.redirect('/');
   }
 });
+
 
 
 ///edit
@@ -72,19 +87,42 @@ router.get('/:workId/edit', isSignedIn, async (req, res) => {
 // show page but not for myfavs 
 router.get('/:workId', async (req, res) => {
     const baseUrl = `https://api.openopus.org/work/detail/${req.params.workId}.json`;
+    console.log(baseUrl)
 
-    
   try {
     const data= await (await fetch(baseUrl)).json()
-    const work = data.works[0]
+    const work = data.work
+    const composer=data.composer
     work.apiId= work.id
-    const w= await Work.findOne({apiId:work.apiId})
+    const w= await Work.findOne({apiId:work.id})
     if (!w) {
-      const newWork = await Work.create(work)
-      res.render("works/show.ejs", { work: newWork, genre: newWork.genre, works,user:req.session.user})
-    } else {
-      res.render("works/show.ejs", { work: w, genre: work.genre,works,user:req.session.user})
-    }
+  let c = await Composer.findOne({ apiId: composer.id });
+  if (!c) {
+    const composerData = {
+      apiId: composer.id,
+      name: composer.name,
+      completeName: composer.complete_name,
+      epoch: composer.epoch,
+      birthYear: composer.birth ? new Date(composer.birth).getFullYear() : null,
+      deathYear: composer.death ? new Date(composer.death).getFullYear() : null,
+      portrait: composer.portrait || null,
+    };
+
+    const newComposer = await Composer.create(composerData);
+    work.composer = newComposer._id;
+    c = newComposer;
+  } else {
+    work.composer = c._id;
+  }
+
+  work.apiId = work.id;
+  const newWork = await Work.create(work);
+  let populated = await Work.findById(newWork._id).populate("composer");
+  res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
+} else {
+  res.render("works/show.ejs", { work: w, genre: work.genre, user: req.session.user });
+}
+
 
   } catch (err) {
     console.log(err);

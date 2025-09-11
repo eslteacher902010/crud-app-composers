@@ -9,6 +9,7 @@ const session = require('express-session');
 
 
 
+
 const authController = require('./controllers/auth');
 const userController = require('./controllers/auth.js');
 const composerController = require('./controllers/composers');
@@ -56,6 +57,7 @@ app.get('/', (req, res) => {
 });
 
 // controllers
+
 app.use('/auth', authController);
 app.use('/users', userController);
 app.use('/composers', composerController);

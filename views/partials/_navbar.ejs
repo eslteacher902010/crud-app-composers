@@ -1,7 +1,8 @@
 <!-- partials/_navbar.ejs -->
 <nav>
   <% if (user) { %>
-  <a href="/composers/favorites">View all Favorites</a>
+  <a href="/composers/favorites">View Favorite Composers</a>
+  <a href="/works/favorites">View Favorite Works</a>
   <a href="/auth/sign-out">Sign Out</a>
   <% } else { %>
   <a href="/auth/sign-up">Sign Up</a>

@@ -1,36 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Favorite Composers</title>
 </head>
 <body>
-    <%- include('../partials/_navbar') %>
-    <p>Favorite Composers</p>
-  
+  <%- include('../partials/_navbar') %>
+  <h1>All My Favorite Composers</h1>
 
-      <% if (composers && composers.length) { %>
-        <ul>
-          <% composers.forEach((composer) => { %>
-           <li>
+  <% if (composers && composers.length) { %>
+    <ul>
+      <% composers.forEach((composer) => { %>
+        <li>
           <div>
-            <img src="<%= composer.portrait %>" />
+            <% if (composer.portrait) { %>
+              <img src="<%= composer.portrait %>" alt="<%= composer.name %> portrait" />
+            <% } %>
             <p>
               <a href="/composers/<%= composer.apiId %>">
-                <%= composer.name %>
+                <%= composer.completeName || composer.name %>
               </a>
             </p>
           </div>
         </li>
-        <% }) %>
-      </ul>
-    <% } else if (!composers && !newComposer) { %>
-      <p>There are no composers at this time.</p>
-    <% } %> 
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>You don’t have any favorite composers yet.</p>
+  <% } %>
 </body>
-<div> 
-      <a href="/index">Back to Home</a>
-</div>
-
 </html>

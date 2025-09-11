@@ -3,15 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+        <link rel="stylesheet" href="/css/style.css" />
+    <title>Composers-Crud</title>
 </head>
 <body>
+    <section class="fiery-classical">
     <%- include('partials/_navbar') %>
-    <p>Welcome!</p>
+    <h1>Welcome to the Composers and Classical Music Encyclopedia!</h1>
+    
+       <h2>Search by Composer Name</h2>
+    
     <form action="/composers/search" method="GET">
         <input type="text" name="search" id="searchBar"/>
-        <button type="submit">Search</button> 
+        <button class="mango-button" type="submit">Search</button> 
     </form>
+
+
+    <h2>Search by Epoch</h2>
+
     <form action="/composers/search/epoch" method="GET">
         <select name="epoch"> 
             <option value="Medieval">Medieval</option>     
@@ -27,21 +36,47 @@
         </select> 
 
         
-        <button type="submit">Search</button> 
+        <button class="mango-button" type="submit">Search</button> 
     </form>
 
-      <h1>Search Works</h1>
+      <h2>Search by Composer or Work Name</h2>
 
       <form action="/works/search" method="GET">
         <input type="text" name="search" id="searchBar" placeholder="Beethoven or Symphony 5"/>
-        <button type="submit">Search</button> 
+        <button class="mango-button" type="submit">Search</button> 
     </form>
 
-    <h2>Search by Composer + Genre</h2>
-    
+    <h2>Search By Popular Composer ID + Genre</h2>
+
     <form action="/works/search/genre" method="get">
-      <label for="composerId">Composer ID:</label>
-      <input type="text" name="composerId" id="composerId" placeholder="e.g. 145" required />
+     <label for="composerId">Choose a Composer:</label>
+<select name="composerId" id="composerId" required>
+  <option value="87">Johann (Bach)</option>
+  <option value="145">Ludwig (Beethoven)</option>
+  <option value="80">Johannes (Brahms)</option>
+  <option value="152">Frédéric (Chopin)</option>
+  <option value="105">Claude (Debussy)</option>
+  <option value="189">Antonín (Dvořák)</option>
+  <option value="136">George (Gershwin)</option>
+  <option value="67">George (Handel)</option>
+  <option value="208">Franz (Haydn)</option>
+  <option value="197">Franz (Liszt)</option>
+  <option value="77">Gustav (Mahler)</option>
+  <option value="147">Felix (Mendelssohn)</option>
+  <option value="196">Wolfgang (Mozart)</option>
+  <option value="146">Giacomo (Puccini)</option>
+  <option value="57">Maurice (Ravel)</option>
+  <option value="183">Franz (Schubert)</option>
+  <option value="129">Robert (Schumann)</option>
+  <option value="165">Johann (Strauss Jr)</option>
+  <option value="190">Igor (Stravinsky)</option>
+  <option value="79">Pyotr (Tchaikovsky)</option>
+  <option value="35">Giuseppe (Verdi)</option>
+  <option value="98">Antonio (Vivaldi)</option>
+  <option value="138">Richard (Wagner)</option>
+</select>
+
+      
 
       <label for="genre">Genre:</label>
       <select name="genre" id="genre" required>
@@ -54,9 +89,10 @@
         <option value="Recommended">Recommended</option>
       </select>
 
-      <button type="submit">Search</button>
+      <button class="mango-button" type="submit">Search</button>
     </form>
 
+    </section>
   
 
 </body>

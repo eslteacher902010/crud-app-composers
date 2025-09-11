@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="/style/style.css" />
+  <link rel="stylesheet" href="/css/style.css">
   <title>Sign In</title>
 </head>
 <body>
+  <section class="treble">
   <%- include('../partials/_navbar.ejs') %>
-<div class=crazy-text> 
-  <h1>Sign in</h1>
-  <form action="/auth/sign-in" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username" required />
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required />
-    <button type="submit">Sign in</button>
-  </form>
+
+  <div class="crazy-text"> 
+    <h1>Sign in</h1>
+    <form action="/auth/sign-in" method="POST">
+      <label class="sign-in" for="username">Username:</label>
+      <input type="text" class="sign-in" name="username" id="username" required />
+
+      <label class="sign-in" for="password">Password:</label>
+      <input type="password" class="sign-in" name="password" id="password" required />
+
+      <button class=sign-in-button type="submit">Sign in</button>
+    </form>
   </div>
+</section>
 </body>
 </html>

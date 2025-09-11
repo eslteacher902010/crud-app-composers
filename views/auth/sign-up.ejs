@@ -3,30 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="stylesheet" href="/style/style.css" />
+  <link rel="stylesheet" href="/css/style.css">
   <title>Sign Up</title>
 </head>
 <body>
-  <%- include('../partials/_navbar.ejs') %>
+  <section class="treble">
+    <%- include('../partials/_navbar.ejs') %>
 
-  <h1>Create a new account!</h1>
-  <div class=crazy-text> 
-  <form action="/auth/sign-up" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username" required />
-    <label for="name">Name:</label>
-    <input type="text" name="name" id="name" required />
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required />
-    <label for="confirmPassword">Confirm Password:</label>
-    <input 
-      type="password"
-      name="confirmPassword"
-      id="confirmPassword"
-      required 
-    />
-    <button type="submit">Sign up</button>
-  </form>
-  </div>
+    <h1><strong>Sign Up!</strong></h1>
+
+    <div class="sign-up"> 
+      <form action="/auth/sign-up" method="POST">
+        <label class="sign-up" for="username">Username:</label>
+        <input type="text" name="username" id="username" required />
+
+        <label class="sign-up" for="name">Name:</label>
+        <input type="text" name="name" id="name" required />
+
+        <label class="sign-up" for="password">Password:</label>
+        <input type="password" name="password" id="password" required />
+
+        <label class="sign-up" for="confirmPassword">Confirm Password:</label>
+        <input 
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          required 
+        />
+
+        <button class="sign-in-button" type="submit">Sign up</button>
+      </form>
+    </div>
+  </section>
 </body>
 </html>

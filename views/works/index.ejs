@@ -3,30 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+        <link rel="stylesheet" href="/css/style.css" />
+    <title>All Works</title>
 </head>
 <body>
+ <section class="fiery-classical">
     <%- include('../partials/_navbar') %>
-    <p>All Works</p>
-    <% if (newWork) { %>
-  <div>
-    <p>
-      <a href="/works/<%= newWork.apiId %>">
-        <%= newWork.title %>
-      </a>
-    </p>
-  </div>
-<% } %>
-
+    <p>Search Results</p>
+   
       <% if (works && works.length) { %>
         <ul>
           <% works.forEach((work) => { %>
-           <li>
+           <li class="work-item">
           <div>
             <p>
-              <a href="/works/<%= work.id %>">
+              <a href="/works/<%=work.id %>">
                 <%= work.title %>
               </a>
+                By <a href="/composers/<%= work.composer.id %>">
+                <%= work.composer.complete_name %> </a>
             </p>
           </div>
         </li>
@@ -35,5 +30,12 @@
     <% } else if (!works && !newWork) { %>
       <p>There are no works at this time.</p>
     <% } %> 
+
+    <form action="/works/search" method="GET">
+      <input type="hidden" name="offset" value="<%= offset+20 %>"/>
+      <input type="hidden" name="search" value="<%= search %>"/>
+      <button type="submit">Next</button>
+    </form>
+</section>
 </body>
 </html>

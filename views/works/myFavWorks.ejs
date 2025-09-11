@@ -1,33 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= recipe.name %></title>
-    <link rel="stylesheet" href="/style/style.css" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Favorite Works</title>
+</head>
+<body>
+  <%- include('../partials/_navbar') %>
+  <h1>All My Favorite Works</h1>
 
-  </head>
-  <body>
-    <%- include('../partials/navbar') %>
-  <div class="work-details">
-    <div>form
-    <h1><%= recipe.name %></h1>
-
-    <h3>Instructions</h3>
-    <p><%= recipe.instructions %></p>
-
-    <h3>Ingredients</h3>
+  <% if (works && works.length) { %>
     <ul>
-      <% if (recipe.ingredients && recipe.ingredients.length) { %>
-        <% recipe.ingredients.forEach(ing => { %>
-          <li><%= ing %></li>
-        <% }) %>
-      <% } else { %>
-        <li>No ingredients listed</li>
-      <% } %>
+      <% works.forEach((work) => { %>
+        <li>
+          <div>
+            <p>
+              <a href="/works/<%= work.apiId %>">
+                <%= work.title %>
+              </a>
+              <% if (work.composer) { %>
+                By <a href="/composers/<%= work.composer._id %>">
+                  <%= work.composer.complete_name %>
+                </a>
+              <% } else { %>
+                <em>(Composer Pending)</em>
+              <% } %>
+            </p>
+          </div>
+        </li>
+      <% }) %>
     </ul>
-
-    <a href="/index">Back to Home</a>
-    </div>
-  </body>
+  <% } else { %>
+    <p>You don’t have any favorite works yet.</p>
+  <% } %>
+</body>
 </html>

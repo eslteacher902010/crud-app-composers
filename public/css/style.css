@@ -1,0 +1,228 @@
+.crazy-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  animation: shake 0.3s infinite, neon 1.5s ease-in-out infinite alternate;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+
+}
+
+
+.treble {
+  background-image: url("/images/SL_123119_26540_42.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 100% 30%;  /* ✅ shift the focus point to the right */
+  min-height: 100vh;
+}
+
+
+.fiery-classical {
+  background-image: url("/images/9624.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 100% 30%;  /* ✅ shift the focus point to the right */
+  min-height: 100vh;
+}
+.sparkly-classical {
+  background-image: url("/images/musbackround1_11.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 100% 30%;  /* ✅ shift the focus point to the right */
+  min-height: 100vh;
+}
+
+.sign-in {
+  font-size: 2rem;
+  color: black;
+  text-shadow:
+    2px 2px 6px rgba(0,0,0,0.8),   /* strong dark shadow */
+    -2px -2px 6px rgba(255,255,255,0.3); /* faint highlight */
+}
+
+.sign-up{
+  font-size: 1.5rem;
+  color: black;
+  text-shadow:
+    2px 2px 6px rgba(0,0,0,0.8),   /* strong dark shadow */
+    -2px -2px 6px rgba(255,255,255,0.3); /* faint highlight */
+}
+
+.sign-up-h1 {
+  font-size: 2rem;
+  color: black;
+
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+
+  background: rgba(255,255,255,0.85);
+  padding: 20px 40px;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+  display: inline-block;
+}
+
+ .sign-in-button {
+      background-color: gray;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .sign-in-button :hover {
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+   /* Whole edit page wrapper */
+.edit-page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.9); /* light box over your bg */
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Headings inside the edit page */
+.edit-page h1 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  text-align: center;
+}
+
+/* Paragraph notes */
+.edit-page p {
+  margin-bottom: 20px;
+  font-style: italic;
+  color: #444;
+}
+
+/* Each form-group */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* Inputs + textareas */
+.form-group input,
+.form-group textarea {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Button styling */
+.edit-page button {
+  background: #4a90e2;
+  color: #fff;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-page button:hover {
+  background: #357ab8;
+}
+
+/* Back link */
+.back-button {
+  display: inline-block;
+  margin-top: 15px;
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+.composer-details {
+  max-width: 800px;          
+  margin: 40px auto;         
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.9); 
+  border-radius: 10px;       
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.work-details {
+  max-width: 800px;          
+  margin: 40px auto;         
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.9); 
+  border-radius: 10px;       
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.favorite-button {
+  background: #e63946;             
+  color: #fff;                     
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.favorite-button:hover {
+  background: #d62828;             /* slightly darker red */
+  transform: scale(1.05);          /* pop effect */
+}
+
+.favorite-button:active {
+  transform: scale(0.97);          /* press down */
+}
+
+
+.mango-button {
+  background: orange;             
+  color: #fff;                     
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.mango-button:hover {
+  background: #d62828;             /* slightly darker red */
+  transform: scale(1.05);          /* pop effect */
+}
+
+.mango-button:active {
+  transform: scale(0.97);          /* press down */
+}
+
+.work-item {
+  border: 1px solid rgba(0, 0, 0, 0.2); /* light gray border */
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin: 10px 0;                      /* spacing between works */
+  background: rgba(255, 255, 255, 0.8); /* light background over fiery bg */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+}
+
+.work-item p {
+  margin: 0; /* remove default p spacing */
+}

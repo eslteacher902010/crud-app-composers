@@ -13,6 +13,7 @@ const composerSchema = new mongoose.Schema({
   completeName: {
     type: String,
     required: true,
+    alias: 'complete_name',
   },
    portrait: {
     type: String,
@@ -26,7 +27,6 @@ const composerSchema = new mongoose.Schema({
   },
   birthYear: {
     type: String,
-    required: true,
   },
   deathYear: {
     type: String,

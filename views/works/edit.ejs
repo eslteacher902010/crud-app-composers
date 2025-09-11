@@ -3,46 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Composer</title>
-    <link rel="stylesheet" href="/style/style.css" />
+    <title>Edit Work</title>
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
 
   <body>
-    <div class="edit-page">
-      <h1>Edit Work</h1>
+    <section class="treble">
+      <div class="edit-page">
+        <h1>Edit Work</h1>
+        <h3><%= work.title || work.subtitle %></h3> 
 
-      <p><strong>Note:</strong>The purpose of this page is to just add more information. Not to change the databases existing information.</p>
+        <p><strong>Note:</strong> The purpose of this page is to just add more information. Not to change the database’s existing information.</p>
 
-      <form action="/works/<%= work.apiId %>?_method=PUT" method="POST">
-        <div class="form-group">
-          <label for="yearComposed">Year Composed:</label>
-          <input type="text" id="yearComposed" name="yearComposed" value="<%= work.yearComposed %>" />
-        </div>
+        <form action="/works/<%= work.apiId %>?_method=PUT" method="POST">
+          <div class="form-group">
+            <label for="yearComposed">Year Composed:</label>
+            <input type="text" id="yearComposed" name="yearComposed" value="<%= work.yearComposed %>" />
+          </div>
 
-        <div class="form-group">
-          <label for="catalogueSystem">Catalogue System (e.g. "K" in Mozart's K.545):</label>
-          <input type="text" id="catalogueSystem" name="catalogueSystem" value="<%= work.catalogueSystem %>" />
-        </div>
+          <div class="form-group">
+            <label for="catalogueSystem">Catalogue System (e.g. "K" in Mozart's K.545):</label>
+            <input type="text" id="catalogueSystem" name="catalogueSystem" value="<%= work.catalogueSystem %>" />
+          </div>
 
-        <div class="form-group">
-          <label for="catalogueNumber">Catalogue Number(e.g. the number after the K in Mozart's K. 545):</label>
-          <textarea id="catalogueNumber" name="catalogueNumber"><%= work.catalogueNumber %></textarea>
-        </div>
+          <div class="form-group">
+            <label for="catalogueNumber">Catalogue Number (e.g. the number after the K in Mozart's K. 545):</label>
+            <input type="text" id="catalogueNumber" name="catalogueNumber" value="<%= work.catalogueNumber %>" />
+          </div>
 
-        <div class="form-group">
-          <label for="notes">Notes (only visible to you)</label>
-          <textarea id="notes" name="notes"><%= userComposer?.notes || "" %></textarea>
-        </div>
+          <div class="form-group">
+            <label for="youTube">YouTube:</label>
+            <input type="text" id="youTube" name="youTube" value="<%= work.youTube %>" />
+          </div>
+        
+          <button type="submit">Save Changes</button>
+        </form>
 
-         <div class="form-group">
-          <label for="youTube">Year Composed:</label>
-          <input type="text" id="yearComposed" name="yearComposed" value="<%= work.yearComposed %>" />
-        </div>
-
-        <button type="submit">Save Changes</button>
-      </form>
-
-      <a class="back-button" href="/composers">Back to Composers</a>
-    </div>
+        <a class="back-button" href="/works">Back to Works</a>
+      </div>
+    </section>
   </body>
 </html>

@@ -4,10 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= work.title || title.subtitle %></title>
-    <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
 
   </head>
   <body>
+
+     <section class="sparkly-classical">
     <%- include('../partials/_navbar') %>
 
   <div class="work-details">
@@ -38,37 +40,40 @@
     <% } %>
 
 
- <% if (work.youTube) { %>
-    <p>YouTube Link:</p>
-    <p><%= work.youTube %></p>
-    <% } %>
+<% if (work.youTube) { 
+     const embedUrl = work.youTube.replace("watch?v=", "embed/");
+%>
+  <p>
+    <a href="<%= work.youTube %>" target="_blank">Watch on YouTube</a>
+  </p>
+  <div class="video-preview">
+    <iframe width="560" height="315"
+      src="<%= embedUrl %>"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+<% } %>
+
 
 
 <form method="POST" action="/works/<%= work.apiId %>/favorites">
-   <% if (user && composer.favoritedBy.includes(user._id)) { %>
-  <button type="submit">Remove Work from Favorites</button>
+   <% if (user && work.favoritedBy.includes(user._id)) { %>
+  <button class= "favorite-button" type="submit">Remove Work from Favorites</button>
   <% } else{ %>
-    <button type="submit">Add Work to Favorites</button>
+    <button class= "favorite-button" type="submit">Add Work to Favorites</button>
   <% } %>
 </form>
+
+
 
 <% if (user) { %>
   <a href="/works/<%= work.apiId %>/edit">Edit Work</a>
 <% } %>
 
-  
+  </section>
 
-  <h2>Popular Works</h2>
-    <ul>
-    <% if (works && works.length) { %>
-        <% works.slice(0, 3).forEach(function(work) { %>
-        <li><a href="/works/<%= work._id %>"><%= work.title %></a></li>
-        <% }) %>
-    <% } else { %>
-        <li>No works listed</li>
-    <% } %>
-    </ul>
-    <a href="/composers/search/epoch?epoch=<%=epoch %>">Back to Search Results</a>
-    </div>
   </body>
 </html>

@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= composer.name || composer.completeName %></title>
-    <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
 
   </head>
   <body>
+    <pre><%= JSON.stringify(composer, null, 2) %></pre>
+
+    <section class="sparkly-classical">
     <%- include('../partials/_navbar') %>
 
   <div class="composer-details">
@@ -35,11 +38,12 @@
     <% } %>
 
 
+
 <form method="POST" action="/composers/<%= composer.apiId %>/favorites">
    <% if (user && composer.favoritedBy.includes(user._id)) { %>
-  <button type="submit">Remove Composer from Favorites</button>
+  <button class= "favorite-button" type="submit">Remove Composer from Favorites</button>
   <% } else{ %>
-    <button type="submit">Add Composer to Favorites</button>
+    <button  class= "favorite-button" type="submit">Add Composer to Favorites</button>
   <% } %>
 </form>
 
@@ -53,7 +57,7 @@
     <ul>
     <% if (works && works.length) { %>
         <% works.slice(0, 3).forEach(function(work) { %>
-        <li><a href="/works/<%= work._id %>"><%= work.title %></a></li>
+        <li><a href="/works/<%= work.id %>"><%= work.title %></a></li>
         <% }) %>
     <% } else { %>
         <li>No works listed</li>
@@ -61,5 +65,7 @@
     </ul>
     <a href="/composers/search/epoch?epoch=<%=epoch %>">Back to Search Results</a>
     </div>
+
+    </section>
   </body>
 </html>

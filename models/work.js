@@ -13,9 +13,7 @@ const workSchema = new mongoose.Schema({
   subtitle: {
     type: String,
   },
-  searchterms: {
-    type: String,
-  },
+  searchTerms: [],
   popular: {
     type: String,
   },
@@ -40,7 +38,11 @@ const workSchema = new mongoose.Schema({
   },
   youTube: {
     type: String, 
-  }
+  },
+   favoritedBy: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Work', workSchema);

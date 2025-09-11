@@ -15,10 +15,7 @@ const userWorkSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-  youTube: {
-    type: String,
-    default: '',
-  },
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model('UserWork', userWorkSchema);
