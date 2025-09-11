@@ -13,9 +13,64 @@
         <h1>Edit Work</h1>
         <h3><%= work.title || work.subtitle %></h3> 
 
-        <p><strong>Note:</strong> The purpose of this page is to just add more information. Not to change the database’s existing information.</p>
+        <p><strong>Note:</strong> The purpose of this page is to just add more information. 
+        Not to change the database’s existing information.</p>
 
         <form action="/works/<%= work.apiId %>?_method=PUT" method="POST">
+
+          <% if (work.composer) { %>
+            <div class="form-group">
+              <label for="composer">Composer:</label>
+              <p>
+                <a href="/composers/<%= work.composer.apiId %>">
+                  <%= work.composer.completeName %>
+                </a>
+                |
+                <a href="https://openopus.org/composer/detail/<%= work.composer.apiId %>" target="_blank">
+                  OpenOpus Profile
+                </a>
+              </p>
+              <input type="hidden" id="composer" name="composerInput" value="<%= work.composer._id %>" />
+            </div>
+          <% } else { %>
+            <div class="form-group">
+              <label for="composer">Composer (apiId or name):</label>
+              <input 
+                type="text" 
+                id="composer" 
+                name="composerInput" 
+                placeholder="Enter OpenOpus composer ID or name" 
+              />
+              <small>
+                Tip: You can look up a composer on 
+                <a href="https://openopus.org/composer/list/popular" target="_blank">OpenOpus</a>
+              </small>
+            </div>
+          <% } %>
+
+              <% if (work.genre && work.genre.trim() !== "") { %>
+      <div class="form-group">
+        <label for="genre">Genre:</label>
+        <input 
+          type="text" 
+          id="genre" 
+          name="genreInput" 
+          value="<%= work.genre %>" 
+        />
+      </div>
+    <% } else { %>
+      <div class="form-group">
+        <label for="genre">Genre:</label>
+        <input 
+          type="text" 
+          id="genre" 
+          name="genreInput" 
+          placeholder="Enter genre (e.g. Symphony, Chamber, Opera...)" 
+        />
+      </div>
+    <% } %>
+
+
           <div class="form-group">
             <label for="yearComposed">Year Composed:</label>
             <input type="text" id="yearComposed" name="yearComposed" value="<%= work.yearComposed %>" />

@@ -12,17 +12,10 @@ router.get('/favorites', isSignedIn, async (req, res) => {
     const populatedWorks = await Work.find({ favoritedBy: req.session.user._id })
       .populate({
         path: "composer",
-        model: "Composer", // force populate with Composer model
+        model: "Composer",
         select: "apiId completeName name"
       })
-      .sort({ yearComposed: -1 })
-      .lean(); // plain JS objects for EJS
-
-    // Debug logging
-    populatedWorks.forEach(work => {
-      console.log("Work:", work.title);
-      console.log("Composer:", work.composer ? work.composer.completeName || work.composer.name : null);
-    });
+      .sort({ yearComposed: -1 });
 
     res.render("works/myFavWorks.ejs", { works: populatedWorks });
   } catch (err) {
@@ -30,7 +23,6 @@ router.get('/favorites', isSignedIn, async (req, res) => {
     res.redirect("/works");
   }
 });
-
 
 
 
@@ -197,54 +189,87 @@ router.post('/:workId/favorites', isSignedIn, async (req, res) => {
 ///updating
 router.put('/:workId', async (req, res) => {
   try {
-    // Build updates object based on your Work schema
     const updates = {
       title: req.body.title,
       subtitle: req.body.subtitle || '',
-      searchterms: req.body.searchterms || '',
-      popular: req.body.popular || '0',
-      recommended: req.body.recommended || '0',
       genre: req.body.genre || '',
-      composer: req.body.composer || null, 
       yearComposed: req.body.yearComposed || null,
       catalogueSystem: req.body.catalogueSystem || '',
       catalogueNumber: req.body.catalogueNumber || '',
       youTube: req.body.youTube || '',
     };
 
-    // Ensure apiId never changes (but we can use it to find the work)
+     if (req.body.genreInput && req.body.genreInput.trim() !== "") {
+      updates.genre = req.body.genreInput.trim();
+    }
+
+
+    if (req.body.composerInput && req.body.composerInput.trim() !== "") {
+      const input = req.body.composerInput.trim();
+      let composer;
+
+      if (/^\d+$/.test(input)) {
+        // Numeric → treat as OpenOpus apiId
+        const apiUrl = `https://api.openopus.org/composer/list/ids/${input}.json`;
+        const data = await (await fetch(apiUrl)).json();
+        const c = data.composers && data.composers[0];
+        if (c) {
+          composer = await Composer.findOneAndUpdate(
+            { apiId: c.id.toString() },
+            {
+              apiId: c.id.toString(),
+              name: c.name,
+              completeName: c.complete_name,
+              epoch: c.epoch,
+              birthYear: c.birth ? new Date(c.birth).getFullYear() : null,
+              deathYear: c.death ? new Date(c.death).getFullYear() : null,
+              portrait: c.portrait || null,
+            },
+            { upsert: true, new: true }
+          );
+        }
+      } else {
+        // Text → use OpenOpus omnisearch
+        const apiUrl = `https://api.openopus.org/omnisearch/${encodeURIComponent(input)}/0.json`;
+        const data = await (await fetch(apiUrl)).json();
+        const c = data.results && data.results.find(r => r.composer)?.composer;
+        if (c) {
+          composer = await Composer.findOneAndUpdate(
+            { apiId: c.id.toString() },
+            {
+              apiId: c.id.toString(),
+              name: c.name,
+              completeName: c.complete_name,
+              epoch: c.epoch,
+              birthYear: c.birth ? new Date(c.birth).getFullYear() : null,
+              deathYear: c.death ? new Date(c.death).getFullYear() : null,
+              portrait: c.portrait || null,
+            },
+            { upsert: true, new: true }
+          );
+        }
+      }
+
+      if (composer) {
+        updates.composer = composer._id;
+      }
+    }
+
     const work = await Work.findOneAndUpdate(
       { apiId: req.params.workId },
       updates,
       { new: true }
-    );
+    ).populate("composer");
 
-    if (!work) {
-      return res.status(404).send('Work not found');
-    }
-
-    // user notes if they exist
-   if (req.body.notes !== undefined || req.body.youTube !== undefined) {
-  await UserWork.findOneAndUpdate(
-    { user: req.session.user._id, work: work._id },
-    {
-      notes: req.body.notes || '',
-      youTube: req.body.youTube || ''
-    },
-    { upsert: true, new: true }
-  );
-}
+    if (!work) return res.status(404).send("Work not found");
 
     res.redirect(`/works/${work.apiId}`);
   } catch (err) {
-    console.error(err);
+    console.error("Error updating work:", err);
     res.status(500).send(err.message);
   }
 });
 
 
-
-
-//individual's list
 
 module.exports = router;
