@@ -190,7 +190,7 @@ router.get('/:workId', async (req, res) => {
 
     if (!data || !data.work || !data.composer) {
       console.error("No work/composer found for", req.params.workId, data);
-      return res.redirect('/works');  // or show a 404 page
+      return res.redirect('/works');  //still didn't fix it but ...hmmm..come back to this
     }
 
     const work = data.work;
