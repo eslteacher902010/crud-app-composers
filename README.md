@@ -120,15 +120,14 @@ router.get('/:workId', async (req, res) => {
     res.redirect('/');
   }
 });
-'''
+```
 
 
 ### Read
 
 Browse all composers or search via OpenOpus API. Getting composer to show was kind of a pain especially in the Work stuff. This one was used for composers
 
-```
-javascript 
+```javascript 
 
 //this searches epoch 
 router.get('/search/epoch', async (req, res) => {
@@ -189,7 +188,7 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 ```
 *Note: My Edit and Update in Works controller were a little more complicated as I gave the user ability to update composer name(since it was so often not adding) and genre(since that was not adding either very often). Below is Update.*
 
-```Javascript
+```javascript
 
 ///updating
 router.put('/:workId', async (req, res) => {
