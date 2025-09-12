@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const composerSchema = new mongoose.Schema({
   apiId: {
     type: String,
-    required: true,
   },  
   name: {
     type: String,

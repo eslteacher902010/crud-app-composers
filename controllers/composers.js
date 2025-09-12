@@ -2,16 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Composer=require("../models/composer")
 const UserComposer = require('../models/userComposer');
+const Work = require('../models/work');
 const isSignedIn = require('../middleware/is-signed-in');
 
 
 ///experiment
-// NEW composer form
+// add new composer form
 router.get('/new', isSignedIn, (req, res) => {
   res.render('composers/new.ejs'); 
 });
 
-// CREATE composer (manual add, not API)
+// create composer with no API
 router.post('/', isSignedIn, async (req, res) => {
   try {
     const composer = await Composer.create({
@@ -27,6 +28,22 @@ router.post('/', isSignedIn, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.redirect('/composers');
+  }
+});
+
+//see those composers
+router.get('/recent', async (req, res) => {
+  try {
+    const recentComposers = await Composer.find()
+      .sort({ createdAt: -1 }).limit(5);
+
+    const recentWorks = await Work.find()
+      .sort({ createdAt: -1 }).limit(5);
+
+    res.render('composers/recent.ejs', { composers: recentComposers, works: recentWorks });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error getting composer or work");
   }
 });
 

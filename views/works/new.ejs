@@ -49,13 +49,9 @@
   </div>
 
   <div>
-    <label for="composerId">Composer:</label>
-    <select id="composerId" name="composerId">
-      <% composers.forEach(c => { %>
-        <option value="<%= c._id %>"><%= c.completeName || c.name %></option>
-      <% }) %>
-    </select>
-  </div>
+  <label for="composerName">Composer:</label>
+  <input type="text" id="composerName" name="composerName" placeholder="e.g. Beethoven"/>
+</div>
 
   <button type="submit">Add Work</button>
 </form>

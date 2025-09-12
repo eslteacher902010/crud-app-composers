@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const workSchema = new mongoose.Schema({
     apiId: {
     type: String,
-    required: true,
   },  
   title: {
     type: String,

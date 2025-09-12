@@ -11,7 +11,7 @@ const isSignedIn = require('../middleware/is-signed-in');
 
 router.get('/new', isSignedIn, async (req, res) => {
   const composers = await Composer.find();
-  res.render('works/new.ejs', { composers });
+  res.render('works/new', { composers });
 });
 
 //create new work

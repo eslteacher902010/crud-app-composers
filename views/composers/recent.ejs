@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="/css/style.css" />
+  <title>Document</title>
+</head>
+<body>
+<section class="sparkly-classical">
+<%- include('../partials/_navbar') %>
+
+<h2 class="recents">Recently Added Composers</h2>
+<ul class="recently-added">
+  <% if (composers && composers.length) { %>
+    <% composers.forEach(function(composer) { %>
+      <li>
+        <a href="/composers/<%= composer._id %>">
+          <%= composer.completeName || composer.name %>
+        </a>
+        <small>(Added <%= composer.createdAt.toDateString() %>)</small>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <li>No composers have been added yet.</li>
+  <% } %>
+</ul>
+
+<h2 class="recents">Recently Added Works</h2>
+<ul class="recently-added">
+  <% if (works && works.length) { %>
+    <% works.forEach(function(work) { %>
+      <li>
+        <a href="/works/<%= work._id %>"><%= work.title %></a>
+        <small>(Added <%= work.createdAt.toDateString() %>)</small>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <li>No works have been added yet.</li>
+  <% } %>
+</ul>
+</section>
+</body>
+</html>

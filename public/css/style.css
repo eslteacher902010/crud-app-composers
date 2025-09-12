@@ -312,7 +312,6 @@ input.search-box {
   padding: 0.6rem;
 }
 
-
 .search-results li {
   font-size: 1.2rem;
   padding: 0.5rem;
@@ -347,4 +346,24 @@ input.search-box {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.recently-added li {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.8); 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  
+}
+
+.recents{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: greenyellow;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  animation: shake 0.3s infinite, neon 1.5s ease-in-out infinite alternate;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
