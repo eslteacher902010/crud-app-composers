@@ -166,6 +166,16 @@ router.get('/:workId', async (req, res) => {
 
   try { ///for new composer check mongodb
 
+    if (!/^\d+$/.test(req.params.workId)) {
+      const localWork = await Work.findOne({ apiId: req.params.workId }).populate("composer");
+      if (!localWork) return res.status(404).send("Work not found");
+      return res.render("works/show.ejs", { 
+        work: localWork, 
+        genre: localWork.genre, 
+        user: req.session.user 
+      });
+}
+
     let localWork = await Work.findOne({ apiId: req.params.workId }).populate("composer");
     if (localWork) {
       return res.render("works/show.ejs", { 
