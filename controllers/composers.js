@@ -143,35 +143,37 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 
 
 // show page but not for myfavs 
+// show page but not for myfavs 
 router.get('/:composerId', async (req, res) => {
   try {
     const { composerId } = req.params;
     let composer, works;
-    //this gets complicated because i'm trying to make sure the composer really shows up
-      if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
-    // It's a MongoDB _id
-    composer = await Composer.findById(composerId);
-    if (!composer) return res.redirect('/');
 
-    const worksRes = await fetch(
-      `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
-    );
-    const worksData = await worksRes.json();
-    const apiWorks = worksData.works || [];
+    // this gets complicated because i'm trying to make sure the composer really shows up
+    if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
+      // It's a MongoDB _id
+      composer = await Composer.findById(composerId);
+      if (!composer) return res.redirect('/');
 
-    const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
+      const worksRes = await fetch(
+        `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
+      );
+      const worksData = await worksRes.json();
+      const apiWorks = worksData.works || [];
 
-    works = [...dbWorks, ...apiWorks];
+      const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
 
-    return res.render("composers/show.ejs", { 
-    composer, 
-    epoch: composer.epoch, 
-    works, 
-    user: req.session.user 
-  });
+      // merge DB and API works
+      works = [...dbWorks, ...apiWorks];
 
+      return res.render("composers/show.ejs", { 
+        composer, 
+        epoch: composer.epoch, 
+        works, 
+        user: req.session.user 
+      });
 
-  } else {
+    } else {
       // It's an OpenOpus API id--no letters
       const baseUrl = `https://api.openopus.org/composer/list/ids/${composerId}.json`;
       const data = await (await fetch(baseUrl)).json();
@@ -183,7 +185,7 @@ router.get('/:composerId', async (req, res) => {
       composer = await Composer.findOneAndUpdate(
         { apiId: apiComposer.id },
         {
-          $set: { ///only change the fields i'm giving you
+          $set: { /// only change the fields i'm giving you
             name: apiComposer.name,
             completeName: apiComposer.complete_name,
             birthYear: new Date(apiComposer.birth).getFullYear(),
@@ -196,32 +198,31 @@ router.get('/:composerId', async (req, res) => {
       );
 
       // fetch by saved ID--safety
-     const worksRes = await fetch(
-  `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
-    );
-    const worksData = await worksRes.json();
-    const apiWorks = worksData.works || [];
+      const worksRes = await fetch(
+        `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
+      );
+      const worksData = await worksRes.json();
+      const apiWorks = worksData.works || [];
 
-    // let's see the new composer
-    const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
+      // let's see the new composer
+      const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
 
-    // merge them together so i can see both
-    works = [...dbWorks, ...apiWorks];
+      // merge them together so i can see both
+      works = [...dbWorks, ...apiWorks];
 
-
-    res.render("composers/show.ejs", { 
-      composer, 
-      epoch: composer.epoch, 
-      works, 
-      user: req.session.user 
-    });
+      return res.render("composers/show.ejs", { 
+        composer, 
+        epoch: composer.epoch, 
+        works, 
+        user: req.session.user 
+      });
+    }
 
   } catch (err) {
     console.log(err);
     res.redirect('/');
   }
 });
-
 
 
 
