@@ -5,66 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= composer.name || composer.completeName %></title>
     <link rel="stylesheet" href="/css/style.css" />
-
   </head>
   <body>
     <section class="sparkly-classical">
-    <%- include('../partials/_navbar') %>
+      <%- include('../partials/_navbar') %>
 
-  <div class="composer-details">
-    <div>
-    <h1><%= composer.name %></h1>
-      
-  <img src="<%= composer.portrait %>" alt="composer portrait" />
-    <p><strong>Complete Name:</strong> <%= composer.completeName %><p>
-    <p><strong>Born:</strong> <%= composer.birthYear %></p>
-    <p><strong>Died:</strong> <%= composer.deathYear %></p>
+      <div class="composer-details">
+        <div>
+          <h1><%= composer.name %></h1>
+          <img src="<%= composer.portrait %>" alt="composer portrait" />
+          <p><strong>Complete Name:</strong> <%= composer.completeName %><p>
+          <p><strong>Born:</strong> <%= composer.birthYear %></p>
+          <p><strong>Died:</strong> <%= composer.deathYear %></p>
 
-    <% if (composer.nationality) { %>
+          <% if (composer.nationality) { %>
+            <p><strong>Nationality:</strong> <%= composer.nationality %></p>
+          <% } %>
 
-  <p><strong>Nationality:</strong> <%= composer.nationality %></p>
-<% } %>
+          <% if (composer.sex) { %>
+            <p><strong>Sex:</strong> <%= composer.sex %></p>
+          <% } %>
 
-    <% if (composer.sex) { %>
-  <p><strong>Sex:</strong> <%= composer.sex %></p>
-<% } %>
+          <% if (composer.biography) { %>
+            <h3>Biography</h3>
+            <p><%= composer.biography %></p>
+          <% } %>
 
+          <form method="POST" action="/composers/<%= composer.apiId || composer._id %>/favorites">
+            <% if (user && composer.favoritedBy.includes(user._id)) { %>
+              <button class="favorite-button" type="submit">Remove Composer from Favorites</button>
+            <% } else { %>
+              <button class="favorite-button" type="submit">Add Composer to Favorites</button>
+            <% } %>
+          </form>
 
- <% if (composer.biography) { %>
-    <h3>Biography</h3>
-    <p><%= composer.biography %></p>
-    <% } %>
+          <% if (user) { %>
+            <a href="/composers/<%= composer.apiId || composer._id %>/edit">Edit Composer</a>
+          <% } %>
 
+          <h2>Popular Works</h2>
+          <ul>
+            <% if (works && works.length) { %>
+              <% works.forEach(function(work) { %>
+                <li>
+                  <a href="/works/<%= work._id || work.id %>">
+                    <%= work.title || work.name %>
+                  </a>
+                </li>
+              <% }) %>
+            <% } else { %>
+              <li>No works listed</li>
+              <li><a href="/works/new">Add a work</a></li>
+            <% } %>
+          </ul>
 
-
-<form method="POST" action="/composers/<%= composer.apiId %>/favorites">
-   <% if (user && composer.favoritedBy.includes(user._id)) { %>
-  <button class= "favorite-button" type="submit">Remove Composer from Favorites</button>
-  <% } else{ %>
-    <button  class= "favorite-button" type="submit">Add Composer to Favorites</button>
-  <% } %>
-</form>
-
-<% if (user) { %>
-  <a href="/composers/<%= composer.apiId %>/edit">Edit Composer</a>
-<% } %>
-
-  
-
-  <h2>Popular Works</h2>
-    <ul>
-    <% if (works && works.length) { %>
-        <% works.slice(0, 3).forEach(function(work) { %>
-        <li><a href="/works/<%= work.id %>"><%= work.title %></a></li>
-        <% }) %>
-    <% } else { %>
-        <li>No works listed</li>
-        <li><a href="/works/new">Add a popular work</a></li>
-    <% } %>
-    </ul>
-    <a href="/composers/search/epoch?epoch=<%=epoch %>">Back to Search Results</a>
-    </div>
-
+          <a href="/composers/search/epoch?epoch=<%= epoch %>">Back to Search Results</a>
+        </div>
+      </div>
     </section>
   </body>
 </html>

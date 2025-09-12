@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Composer=require("../models/composer")
+const Composer = require("../models/composer");
 const UserComposer = require('../models/userComposer');
 const Work = require('../models/work');
 const isSignedIn = require('../middleware/is-signed-in');
-const fetch = require("node-fetch");
-
 
 
 ///experiment
@@ -53,7 +51,7 @@ router.get('/recent', async (req, res) => {
 //my fav composers
 router.get('/favorites', isSignedIn, async (req, res) => {
   console.log("hello")
-  const populatedComposers = await Composer.find({favoritedBy: req.session.user._id});
+  const populatedComposers = await Composer.find({ favoritedBy: req.session.user._id });
   try {
     res.render('composers/myFavComposers.ejs', {
       composers: populatedComposers,
@@ -66,23 +64,22 @@ router.get('/favorites', isSignedIn, async (req, res) => {
 
 //this searches specific composer 
 router.get('/search', async (req, res) => {
-    const baseUrl=`https://api.openopus.org/composer/list/search/${req.query.search}.json`
+  const baseUrl = `https://api.openopus.org/composer/list/search/${req.query.search}.json`
   try {
-    const data= await (await fetch(baseUrl)).json()
-    const composer = data.composers[0]
-    composer.apiId= composer.id
-    composer.birthYear= new Date (composer.birth).getFullYear()
-    composer.deathYear= new Date (composer.death).getFullYear()
-    composer.completeName=composer.complete_name
-    const c= await Composer.findOne({apiId:composer.id})
-    if(!c){
-        const newComposer= await Composer.create(composer)
-        res.render("composers/index.ejs", {newComposer, composers:null})
-      }else{
+    const data = await (await fetch(baseUrl)).json();
+    const composer = data.composers[0];
+    composer.apiId = composer.id;
+    composer.birthYear = new Date(composer.birth).getFullYear();
+    composer.deathYear = new Date(composer.death).getFullYear();
+    composer.completeName = composer.complete_name;
 
-        res.render("composers/index.ejs", {newComposer:c, composers:null})
-      }
-
+    const c = await Composer.findOne({ apiId: composer.id });
+    if (!c) {
+      const newComposer = await Composer.create(composer);
+      res.render("composers/index.ejs", { newComposer, composers: null });
+    } else {
+      res.render("composers/index.ejs", { newComposer: c, composers: null });
+    }
   } catch (err) {
     console.log(err);
     res.redirect('/');
@@ -92,33 +89,45 @@ router.get('/search', async (req, res) => {
 
 //this searches epoch 
 router.get('/search/epoch', async (req, res) => {
-  console.log(req.query.epoch)
-  const baseUrl = `https://api.openopus.org/composer/list/epoch/${req.query.epoch}.json`
+  console.log(req.query.epoch);
+  const baseUrl = `https://api.openopus.org/composer/list/epoch/${req.query.epoch}.json`;
 
   try {
-    const response = await fetch(baseUrl)
-    const data = await response.json()
+    const response = await fetch(baseUrl);
+    const data = await response.json();
 
     const composers = data.composers.map(c => ({
       ...c,
       apiId: c.id,
       completeName: c.complete_name,
-      birthYear: new Date (c.birth).getFullYear(),
-      deathYear: new Date (c.death).getFullYear()
-    }))
+      birthYear: new Date(c.birth).getFullYear(),
+      deathYear: new Date(c.death).getFullYear()
+    }));
 
-    res.render("composers/index", { composers, newComposer: null, epoch: req.query.search })
+    res.render("composers/index", { composers, newComposer: null, epoch: req.query.search });
 
   } catch (err) {
-    console.log(err)
-    res.redirect('/')
+    console.log(err);
+    res.redirect('/');
   }
-})
+});
 
+
+///edit
 ///edit
 router.get('/:composerId/edit', isSignedIn, async (req, res) => {
   try {
-    const composer = await Composer.findOne({ apiId: req.params.composerId });
+    const { composerId } = req.params;
+
+    let composer;
+    if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
+      // It's a MongoDB ObjectId--got letters and shit
+      composer = await Composer.findById(composerId);
+    } else {
+      // It's an API id--cleaner
+      composer = await Composer.findOne({ apiId: composerId });
+    }
+
     if (!composer) return res.status(404).send('Composer not found');
 
     let userComposer = await UserComposer.findOne({
@@ -142,7 +151,7 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 
 
 
-// show page but not for myfavs 
+
 // show page but not for myfavs 
 router.get('/:composerId', async (req, res) => {
   try {
@@ -161,6 +170,7 @@ router.get('/:composerId', async (req, res) => {
       const worksData = await worksRes.json();
       const apiWorks = worksData.works || [];
 
+      // also grab works saved locally
       const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
 
       // merge DB and API works
@@ -185,7 +195,7 @@ router.get('/:composerId', async (req, res) => {
       composer = await Composer.findOneAndUpdate(
         { apiId: apiComposer.id },
         {
-          $set: { /// only change the fields i'm giving you
+          $set: { /// only change the fields i'm giving to it
             name: apiComposer.name,
             completeName: apiComposer.complete_name,
             birthYear: new Date(apiComposer.birth).getFullYear(),
@@ -227,41 +237,26 @@ router.get('/:composerId', async (req, res) => {
 
 
 
-
-// // Create Route: Handles the submission of the new author form
-// router.post('/', async (req, res) => {
-//   try {
-//     const newWork = await Work.create({ name: req.body.name });
-//     res.redirect('/works');
-//   } catch (error) {
-//     console.error('error saving work:', error);
-//     res.redirect('/');
-//   }
-// });
-
 //create the fav list
 router.post('/:composerId/favorites', isSignedIn, async (req, res) => {
-  const composer= await Composer.findOne({apiId:req.params.composerId})
-  console.log(composer)
-  if(!composer.favoritedBy.includes(req.session.user._id)){
-    composer.favoritedBy.push(req.session.user._id)
-    await composer.save()
-  } else{
-    composer.favoritedBy.remove(req.session.user._id)
-    await composer.save()
-  } 
-  // req.body.favoritedBy = req.session.user._id;
-  // await Composer.create(req.body);
-    res.redirect(`/composers/${req.params.composerId}`);
+  const composer = await Composer.findOne({ apiId: req.params.composerId });
+  console.log(composer);
+  if (!composer.favoritedBy.includes(req.session.user._id)) {
+    composer.favoritedBy.push(req.session.user._id);
+    await composer.save();
+  } else {
+    composer.favoritedBy.remove(req.session.user._id);
+    await composer.save();
+  }
+  res.redirect(`/composers/${req.params.composerId}`);
 });
 
 
 
 ///updating
-
 router.put('/:composerId', async (req, res) => {
   try {
-        const updates = {
+    const updates = {
       name: req.body.name,
       completeName: req.body.completeName,
       sex: req.body.sex || null,
@@ -275,7 +270,6 @@ router.put('/:composerId', async (req, res) => {
     if (req.body.portrait && req.body.portrait.trim() !== '') {
       updates.portrait = req.body.portrait.trim();
     }
-
 
     const composer = await Composer.findOneAndUpdate(
       { apiId: req.params.composerId },
@@ -295,7 +289,6 @@ router.put('/:composerId', async (req, res) => {
       );
     }
 
-
     res.redirect(`/composers/${composer.apiId}`);
   } catch (err) {
     res.status(500).send(err.message);
@@ -303,7 +296,5 @@ router.put('/:composerId', async (req, res) => {
 });
 
 
-
 //individual's list
-
 module.exports = router;

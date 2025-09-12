@@ -5,7 +5,7 @@ const Work=require("../models/work")
 const Composer=require("../models/composer")
 const UserWork = require('../models/userWork');
 const isSignedIn = require('../middleware/is-signed-in');
-const fetch = require("node-fetch");
+
 
 
 ///experimental
@@ -19,6 +19,20 @@ router.get('/new', isSignedIn, async (req, res) => {
 //create new work
 router.post('/', isSignedIn, async (req, res) => {
   try {
+
+    let composerDoc = null;
+
+    if (req.body.composerId) {
+      // First try to find by Mongo _id
+      composerDoc = await Composer.findById(req.body.composerId);
+
+      // If not found, try by apiId
+      if (!composerDoc) {
+        composerDoc = await Composer.findOne({ apiId: req.body.composerId });
+      }
+    }
+
+
     const work = await Work.create({
       title: req.body.title,
       subtitle: req.body.subtitle || '',
@@ -27,7 +41,7 @@ router.post('/', isSignedIn, async (req, res) => {
       catalogueNumber: req.body.catalogueNumber || '',
       genre: req.body.genre || '',
       youTube: req.body.youTube || '',
-      composer: req.body.composerId || null,  
+      composer: composerDoc ? composerDoc._id : null,  
       source: "local" 
     });
 
