@@ -29,7 +29,11 @@ router.post('/', isSignedIn, async (req, res) => {
       source: "local" 
     });
 
-    res.redirect(`/works/${work._id}`);
+    work.apiId = work._id.toString();
+    await work.save();
+
+
+    res.redirect(`/works/${work.apiId}`);
   } catch (err) {
     console.error("Error creating work:", err);
     res.redirect('/works');
@@ -144,7 +148,17 @@ router.get('/:workId', async (req, res) => {
     const baseUrl = `https://api.openopus.org/work/detail/${req.params.workId}.json`;
     console.log(baseUrl)
 
-  try { ///make a call to the api above
+  try { ///for new composer check mongodb
+
+    let localWork = await Work.findOne({ apiId: req.params.workId }).populate("composer");
+    if (localWork) {
+      return res.render("works/show.ejs", { 
+        work: localWork, 
+        genre: localWork.genre, 
+        user: req.session.user 
+      });
+    }
+    ///make a call to the api above
     const data= await (await fetch(baseUrl)).json()
     const work = data.work
     const composer=data.composer

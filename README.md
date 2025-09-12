@@ -70,7 +70,17 @@ router.get('/:workId', async (req, res) => {
     const baseUrl = `https://api.openopus.org/work/detail/${req.params.workId}.json`;
     console.log(baseUrl)
 
-  try { ///make a call to the api above
+  try { ///for new composer check mongodb
+
+    let localWork = await Work.findOne({ apiId: req.params.workId }).populate("composer");
+    if (localWork) {
+      return res.render("works/show.ejs", { 
+        work: localWork, 
+        genre: localWork.genre, 
+        user: req.session.user 
+      });
+    }
+    ///make a call to the api above
     const data= await (await fetch(baseUrl)).json()
     const work = data.work
     const composer=data.composer
@@ -301,13 +311,14 @@ const populatedWorks = await Work.find({ favoritedBy: req.session.user._id })
 
 * Add authentication with OAuth providers.
 * Improve error handling when API results don’t return matches.
-* Add filtering by **epoch** or **genre** for better discovery.
-* Implement user profile pages with personal music libraries.
+* Add filtering by **catalogue** or **sex** for better discovery.
+* Let you see other users favorite composeres and songs. 
 * Add the ability to create a new composer--Noticed there's no ***Fanny***. This will be coming soon.
+* Perfect the new route. 
 
 ---
 
-## 🎵 Credits
+## 🎵🎵🎵 Credits
 
 * Data from [OpenOpus API](https://openopus.org/)
 * Built with ❤️ for classical music enthusiasts.
