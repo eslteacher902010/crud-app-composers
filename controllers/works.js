@@ -175,9 +175,17 @@ router.get('/:workId', async (req, res) => {
       });
     }
     ///make a call to the api above
-    const data= await (await fetch(baseUrl)).json()
-    const work = data.work
-    const composer=data.composer
+    const data = await (await fetch(baseUrl)).json();
+
+
+    if (!data || !data.work || !data.composer) {
+      console.error("No work/composer found for", req.params.workId, data);
+      return res.redirect('/works');  // or show a 404 page
+    }
+
+    const work = data.work;
+    const composer = data.composer;
+
     work.apiId= work.id
     const w= await Work.findOne({apiId:work.id})
     if (!w) {
