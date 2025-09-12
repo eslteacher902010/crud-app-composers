@@ -311,5 +311,5 @@ const populatedWorks = await Work.find({ favoritedBy: req.session.user._id })
 
 * Data from [OpenOpus API](https://openopus.org/)
 * Built with ❤️ for classical music enthusiasts.
-* Thank you to Stefanie Lee.
+* Thank you to Stephanie Lee.
 
