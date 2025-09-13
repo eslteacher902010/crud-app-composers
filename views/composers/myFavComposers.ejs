@@ -7,30 +7,30 @@
   <title>My Favorite Composers</title>
 </head>
 <body>
-    <section class="treble">
-  <%- include('../partials/_navbar') %>
-  <p class="favs-text">All My Favorite Composers</p>
+  <section class="treble">
+    <%- include('../partials/_navbar') %>
+    <p class="favs-text">All My Favorite Composers</p>
 
-  <% if (composers && composers.length) { %>
-    <ul class="favs-page">
-      <% composers.forEach((composer) => { %>
-        <li class="favs-page">
-          <div>
-            <% if (composer.portrait) { %>
-              <img src="<%= composer.portrait %>" alt="<%= composer.name %> portrait" />
-            <% } %>
-            <p>
-              <a href="/composers/<%= composer.apiId %>">
-                <%= composer.completeName || composer.name %>
-              </a>
-            </p>
-          </div>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    <p>You don’t have any favorite composers yet.</p>
-  <% } %>
+    <% if (composers && composers.length) { %>
+      <ul class="favs-page">
+        <% composers.forEach((composer) => { %>
+          <li class="favs-page">
+            <div>
+              <% if (composer.portrait) { %>
+                <img src="<%= composer.portrait %>" alt="<%= composer.name %> portrait" />
+              <% } %>
+              <p>
+                <a href="/composers/<%= composer.source === 'local' || !composer.apiId ? composer._id : composer.apiId %>">
+                  <%= composer.completeName || composer.name %>
+                </a>
+              </p>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>You don’t have any favorite composers yet.</p>
+    <% } %>
   </section>
 </body>
 </html>

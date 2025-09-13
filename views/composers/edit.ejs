@@ -4,43 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Composer</title>
-   <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
 
   <body>
     <section class="treble">
-    <div class="edit-page">
-      <h1>Edit Composer</h1>
+      <div class="edit-page">
+        <h1>Edit Composer</h1>
 
-          <p><strong>Note:</strong>The purpose of this page is to just add more information. Not to change the databases existing information.</p>
+        <p><strong>Note:</strong> Use this form to update or add information about the composer.</p>
 
+        <!-- ✅ 3-way check: _id (local), apiId (OpenOpus), or id (fallback) -->
+        <form action="/composers/<%= composer._id || composer.apiId || composer.id %>?_method=PUT" method="POST">
+          <input type="hidden" name="_method" value="PUT" />
+          <input type="hidden" name="composerId" value="<%= composer._id || composer.apiId || composer.id %>" />
 
-      <form action="/composers/<%= composer.apiId %>?_method=PUT" method="POST">
-        <div class="form-group">
-          <label for="sex">Sex:</label>
-          <input type="text" id="sex" name="sex" value="<%= composer.sex %>" />
-        </div>
+          <div class="form-group">
+            <label for="sex">Sex:</label>
+            <input type="text" id="sex" name="sex" value="<%= composer.sex || '' %>" />
+          </div>
 
-        <div class="form-group">
-          <label for="nationality">Nationality</label>
-          <input type="text" id="nationality" name="nationality" value="<%= composer.nationality %>" />
-        </div>
+          <div class="form-group">
+            <label for="nationality">Nationality:</label>
+            <input type="text" id="nationality" name="nationality" value="<%= composer.nationality || '' %>" />
+          </div>
 
-        <div class="form-group">
-          <label for="biography">Biography</label>
-          <textarea id="biography" name="biography"><%= composer.biography %></textarea>
-        </div>
+          <div class="form-group">
+            <label for="biography">Biography:</label>
+            <textarea id="biography" name="biography"><%= composer.biography || '' %></textarea>
+          </div>
 
-        <div class="form-group">
-          <label for="notes">Notes (only visible to you)</label>
-          <textarea id="notes" name="notes"><%= userComposer?.notes || "" %></textarea>
-        </div>
+          <div class="form-group">
+            <label for="notes">Notes (only visible to you):</label>
+            <textarea id="notes" name="notes"><%= (userComposer && userComposer.notes) ? userComposer.notes : '' %></textarea>
+          </div>
 
-        <button type="submit">Save Changes</button>
-      </form>
+          <button type="submit">Save Changes</button>
+        </form>
 
-      <a class="back-button" href="/composers">Back to Composers</a>
-    </div>
+        <a class="back-button" href="/composers">Back to Composers</a>
+      </div>
     </section>
   </body>
 </html>

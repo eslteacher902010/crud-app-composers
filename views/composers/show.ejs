@@ -43,32 +43,30 @@
             <a href="/composers/<%= composer.apiId || composer._id %>/edit">Edit Composer</a>
           <% } %>
 
-         <h2>Popular Works</h2>
-        <ul>
-          <% if (works && works.length) { %>
-            <% works.forEach(function(work) { %>
+          <h2>Popular Works</h2>
+          <ul>
+            <% if (works && works.length) { %>
+              <% works.forEach(function(work) { %>
+                <li>
+                  <a href="/works/<%= work.apiId || work._id || work.id %>">
+                    <%= work.title || work.name %>
+                  </a>
+                </li>
+              <% }) %>
+            <% } %>
+
+            <% 
+              // ✅ calculate how many "Add Work" links are needed
+              const remainingSlots = Math.max(0, 3 - (works ? works.length : 0)); 
+              for (let i = 0; i < remainingSlots; i++) { 
+            %>
               <li>
-                <a href="/works/<%= work.apiId %>">
-                  <%= work.title || work.name %>
+                <a href="/works/new?composerId=<%= composer._id || composer.apiId %>">
+                  Add Work
                 </a>
               </li>
-            <% }) %>
-          <% } %>
-
-          <% 
-            // ✅ calculate how many "Add Work" links are needed
-            const remainingSlots = Math.max(0, 3 - (works ? works.length : 0)); 
-            for (let i = 0; i < remainingSlots; i++) { 
-          %>
-            <li>
-              <a href="/works/new?composerId=<%= composer._id || composer.apiId %>">
-                Add Work
-              </a>
-            </li>
-          <% } %>
-        </ul>
-
-
+            <% } %>
+          </ul>
 
           <a href="/composers/search/epoch?epoch=<%= epoch %>">Back to Search Results</a>
         </div>

@@ -183,8 +183,6 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 
 
 
-
-// show page but not for myfavs 
 // show page but not for myfavs 
 router.get('/:composerId', async (req, res) => {
   try {
@@ -204,13 +202,13 @@ router.get('/:composerId', async (req, res) => {
         );
         const worksData = await worksRes.json();
 
-        // ✅ Tag all API works with a `source` so the view knows
+        // Tag all API works with a `source` so the view knows
         apiWorks = (worksData.works || []).map(w => ({ ...w, source: "api" }));
       }
 
       // Always grab local works saved in MongoDB
       const dbWorks = (await Work.find({ composer: composer._id }).sort({ createdAt: -1 }))
-        // ✅ Convert Mongoose docs to plain objects and tag with `source: "local"`
+        // Convert Mongoose docs to plain objects and tag with `source: "local"`
         .map(w => ({ ...w.toObject(), source: "local" }));
 
       // Merge DB and API works
@@ -253,12 +251,12 @@ router.get('/:composerId', async (req, res) => {
       );
       const worksData = await worksRes.json();
 
-      // ✅ Tag API works
+      // Tag API works
       const apiWorks = (worksData.works || []).map(w => ({ ...w, source: "api" }));
 
       // Also fetch local works tied to this composer
       const dbWorks = (await Work.find({ composer: composer._id }).sort({ createdAt: -1 }))
-        // ✅ Tag DB works
+        // Tag DB works
         .map(w => ({ ...w.toObject(), source: "local" }));
 
       // Merge DB and API works
@@ -316,6 +314,7 @@ router.post('/:composerId/favorites', isSignedIn, async (req, res) => {
         birthYear: apiComposer.birth ? new Date(apiComposer.birth).getFullYear() : null,
         deathYear: apiComposer.death ? new Date(apiComposer.death).getFullYear() : null,
         portrait: apiComposer.portrait || null,
+        source: "api",
         favoritedBy: []
       });
     }
@@ -336,7 +335,17 @@ router.post('/:composerId/favorites', isSignedIn, async (req, res) => {
 
     await composer.save();
 
-    res.redirect(`/composers/${composer.apiId || composer._id}`);
+    // ✅ Safe redirect based on source
+    let redirectId;
+    if (composer.source === "local" || !composer.apiId) {
+      redirectId = composer._id;
+    } else {
+      redirectId = composer.apiId;
+    }
+
+    console.log("Redirecting to:", redirectId);
+    res.redirect(`/composers/${redirectId}`);
+
   } catch (err) {
     console.error("Error toggling favorite:", err);
     res.status(500).send("Error updating favorites");
@@ -345,8 +354,11 @@ router.post('/:composerId/favorites', isSignedIn, async (req, res) => {
 
 
 ///updating
+// === Update Composer (handles both _id and apiId) ===
 router.put('/:composerId', async (req, res) => {
   try {
+    const { composerId } = req.params;
+
     const updates = {
       name: req.body.name,
       completeName: req.body.completeName,
@@ -362,11 +374,22 @@ router.put('/:composerId', async (req, res) => {
       updates.portrait = req.body.portrait.trim();
     }
 
-    const composer = await Composer.findOneAndUpdate(
-      { apiId: req.params.composerId },
-      updates,
-      { new: true }
-    );
+    let composer;
+    if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
+      // Local Mongo ObjectId
+      composer = await Composer.findOneAndUpdate(
+        { _id: composerId },
+        updates,
+        { new: true }
+      );
+    } else {
+      // API composer id
+      composer = await Composer.findOneAndUpdate(
+        { apiId: composerId },
+        updates,
+        { new: true }
+      );
+    }
 
     if (!composer) {
       return res.status(404).send('Composer not found');
@@ -380,11 +403,13 @@ router.put('/:composerId', async (req, res) => {
       );
     }
 
-    res.redirect(`/composers/${composer.apiId}`);
+    res.redirect(`/composers/${composer.apiId || composer._id}`);
   } catch (err) {
+    console.error("Error updating composer:", err);
     res.status(500).send(err.message);
   }
 });
+
 
 
 // // Delete a work

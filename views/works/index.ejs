@@ -40,11 +40,11 @@
       <input 
         type="text" 
         name="search" 
-        value="<%= search %>" 
+        value="<%= search || '' %>" 
         class="search-box" 
         placeholder="Search works..." 
       />
-      <input type="hidden" name="offset" value="<%= offset+20 %>" />
+      <input type="hidden" name="offset" value="<%= (offset || 0) + 20 %>" />
       <button type="submit">Next</button>
     </form>
   </section>
