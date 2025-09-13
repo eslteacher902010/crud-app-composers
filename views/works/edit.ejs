@@ -11,12 +11,28 @@
     <section class="treble">
       <div class="edit-page">
         <h1>Edit Work</h1>
-        <h3><%= work.title || work.subtitle %></h3> 
 
         <p><strong>Note:</strong> The purpose of this page is to just add more information. 
-        Not to change the database’s existing information.</p>
+        Not to change the database’s existing information (except for local works).</p>
 
+        <!-- ✅ Update form wraps everything -->
         <form action="/works/<%= work.apiId %>?_method=PUT" method="POST">
+
+          <!-- ✅ Editable title if local, read-only otherwise -->
+          <% if (work.source && work.source.toLowerCase().trim() === "local") { %>
+            <div class="form-group">
+              <label for="title">Title:</label>
+              <input 
+                type="text" 
+                id="title" 
+                name="title" 
+                value="<%= work.title %>" 
+                required
+              />
+            </div>
+          <% } else { %>
+            <h3><%= work.title || work.subtitle %></h3>
+          <% } %>
 
           <% if (work.composer) { %>
             <div class="form-group">
@@ -48,28 +64,16 @@
             </div>
           <% } %>
 
-              <% if (work.genre && work.genre.trim() !== "") { %>
-      <div class="form-group">
-        <label for="genre">Genre:</label>
-        <input 
-          type="text" 
-          id="genre" 
-          name="genreInput" 
-          value="<%= work.genre %>" 
-        />
-      </div>
-    <% } else { %>
-      <div class="form-group">
-        <label for="genre">Genre:</label>
-        <input 
-          type="text" 
-          id="genre" 
-          name="genreInput" 
-          placeholder="Enter genre (e.g. Symphony, Chamber, Opera...)" 
-        />
-      </div>
-    <% } %>
-
+          <div class="form-group">
+            <label for="genre">Genre:</label>
+            <input 
+              type="text" 
+              id="genre" 
+              name="genreInput" 
+              value="<%= work.genre || '' %>" 
+              placeholder="Enter genre (e.g. Symphony, Chamber, Opera...)" 
+            />
+          </div>
 
           <div class="form-group">
             <label for="yearComposed">Year Composed:</label>

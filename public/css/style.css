@@ -29,10 +29,13 @@ body {
   background-image: url("/images/9624.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 100% 30%;
-  min-height: 100vh;
+  background-position: center;   /* cleaner than 100% 30% */
+  min-height: 100vh;             /* always at least full screen */
+  height: 100%;                  /* allow it to stretch with content */
   padding-top: 100px;
 }
+
+
 .sparkly-classical {
   background-image: url("/images/musbackround1_11.jpg");
   background-size: cover;

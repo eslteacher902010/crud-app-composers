@@ -112,6 +112,38 @@ router.get('/search/epoch', async (req, res) => {
   }
 });
 
+// search only local composers (manually added)
+router.get('/search/local', async (req, res) => {
+  try {
+    const term = req.query.search || "";
+
+    let composers;
+    if (term.trim() === "") {
+      // if no search term, return all local composers
+      composers = await Composer.find({ source: "local" });
+    } else {
+      // regex search against name/completeName
+      composers = await Composer.find({
+        source: "local",
+        $or: [
+          { name: { $regex: term, $options: "i" } },
+          { completeName: { $regex: term, $options: "i" } }
+        ]
+      });
+    }
+
+    res.render("composers/index.ejs", { 
+      composers, 
+      newComposer: null, 
+      epoch: null 
+    });
+  } catch (err) {
+    console.error("Error searching local composers:", err);
+    res.redirect('/composers');
+  }
+});
+
+
 
 ///edit
 router.get('/:composerId/edit', isSignedIn, async (req, res) => {
@@ -152,6 +184,7 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
 
 
 // show page but not for myfavs 
+// show page but not for myfavs 
 router.get('/:composerId', async (req, res) => {
   try {
     const { composerId } = req.params;
@@ -169,11 +202,15 @@ router.get('/:composerId', async (req, res) => {
           `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
         );
         const worksData = await worksRes.json();
-        apiWorks = worksData.works || [];
+
+        // ✅ Tag all API works with a `source` so the view knows
+        apiWorks = (worksData.works || []).map(w => ({ ...w, source: "api" }));
       }
 
       // Always grab local works saved in MongoDB
-      const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
+      const dbWorks = (await Work.find({ composer: composer._id }).sort({ createdAt: -1 }))
+        // ✅ Convert Mongoose docs to plain objects and tag with `source: "local"`
+        .map(w => ({ ...w.toObject(), source: "local" }));
 
       // Merge DB and API works
       works = [...dbWorks, ...apiWorks];
@@ -214,10 +251,14 @@ router.get('/:composerId', async (req, res) => {
         `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
       );
       const worksData = await worksRes.json();
-      const apiWorks = worksData.works || [];
+
+      // ✅ Tag API works
+      const apiWorks = (worksData.works || []).map(w => ({ ...w, source: "api" }));
 
       // Also fetch local works tied to this composer
-      const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
+      const dbWorks = (await Work.find({ composer: composer._id }).sort({ createdAt: -1 }))
+        // ✅ Tag DB works
+        .map(w => ({ ...w.toObject(), source: "local" }));
 
       // Merge DB and API works
       works = [...dbWorks, ...apiWorks];
@@ -235,6 +276,7 @@ router.get('/:composerId', async (req, res) => {
     res.redirect('/');
   }
 });
+
 
 
 
@@ -297,6 +339,25 @@ router.put('/:composerId', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
+
+// // Delete a work
+// router.delete('/works/:workId', isSignedIn, async (req, res) => {
+//   try {
+//     // Handle either Mongo _id or apiId
+//     const work = await Work.findOneAndDelete({
+//       $or: [{ _id: req.params.workId }, { apiId: req.params.workId }]
+//     });
+
+//     if (!work) return res.status(404).send("Work not found");
+
+//     res.redirect(`/composers/${work.composer}`);
+//   } catch (err) {
+//     console.error("Error deleting work:", err);
+//     res.status(500).send("Error deleting work");
+//   }
+// });
+
 
 
 //individual's list

@@ -91,9 +91,35 @@
 
       <button class="mango-button" type="submit">Search</button>
     </form>
-
-    </section>
   
+    <h2>Search My Added Composers</h2>
+
+<form action="/composers/search/local" method="GET">
+  <input 
+    type="text" 
+    class="wonky-search" 
+    name="search" 
+    id="localSearchBar" 
+    placeholder="Search your own composers..."
+  />
+  <button class="mango-button" type="submit">Search</button> 
+</form>
+
+<h2>Search My Added Works</h2>
+
+<form action="/works/search/local" method="GET">
+  <input 
+    type="text" 
+    class="wonky-search" 
+    name="search" 
+    id="localWorkSearchBar" 
+    placeholder="Search your own works..."
+  />
+  <button class="mango-button" type="submit">Search</button> 
+</form>
+
+
+</section>
 
 </body>
 </html>

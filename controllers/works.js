@@ -19,7 +19,6 @@ router.get('/new', isSignedIn, async (req, res) => {
 //create new work
 router.post('/', isSignedIn, async (req, res) => {
   try {
-
     let composerDoc = null;
 
     if (req.body.composerId) {
@@ -31,7 +30,6 @@ router.post('/', isSignedIn, async (req, res) => {
         composerDoc = await Composer.findOne({ apiId: req.body.composerId });
       }
     }
-
 
     const work = await Work.create({
       title: req.body.title,
@@ -47,7 +45,6 @@ router.post('/', isSignedIn, async (req, res) => {
 
     work.apiId = work._id.toString();
     await work.save();
-
 
     res.redirect(`/works/${work.apiId}`);
   } catch (err) {
@@ -82,10 +79,6 @@ router.get('/favorites', isSignedIn, async (req, res) => {
 router.get('/search', async (req, res) => {
   const query = req.query.search; 
   let offset= 0
-  // if (!query) {
-  //   return res.render("works/index.ejs", { works: [], newWorks: null, genre: null });
-  // }
-  console.log(req.query)
   if(req.query.offset){
     offset=req.query.offset
   }
@@ -95,15 +88,13 @@ router.get('/search', async (req, res) => {
     const data = await (await fetch(url)).json();
     const results = data.results || [];
     
-
     const works = results
       .filter(r => r.work)
       .map(r => ({
         ...r.work,
         composer: r.composer
       }));
-      console.log(works)
-
+    console.log(works)
 
     res.render("works/index.ejs", { works, newWorks: null, genre: null, offset, search:req.query.search});
   } catch (err) {
@@ -130,12 +121,13 @@ router.get('/search/genre', async (req, res) => {
 
 
 
-
 ///edit
 router.get('/:workId/edit', isSignedIn, async (req, res) => {
   try {
-    const work = await Work.findOne({ apiId: req.params.workId });
-    if (!work) return res.status(404).send('Composer not found');
+    // ✅ Try both _id and apiId
+    const work = await Work.findById(req.params.workId) 
+              || await Work.findOne({ apiId: req.params.workId });
+    if (!work) return res.status(404).send('Work not found');
 
     let userWork = await UserWork.findOne({
       user: req.session.user._id,
@@ -143,14 +135,13 @@ router.get('/:workId/edit', isSignedIn, async (req, res) => {
     });
 
     if (!userWork) {
-  userWork = await UserWork.create({
-    user: req.session.user._id,
-    work: work._id,
-    notes: '',
-    youTube: ''
-  });
-}
-
+      userWork = await UserWork.create({
+        user: req.session.user._id,
+        work: work._id,
+        notes: '',
+        youTube: ''
+      });
+    }
 
     res.render('works/edit.ejs', { work, userWork });
   } catch (err) {
@@ -160,23 +151,33 @@ router.get('/:workId/edit', isSignedIn, async (req, res) => {
 
 
 // show page but not for myfavs 
+// show page but not for myfavs 
 router.get('/:workId', async (req, res) => {
-    const baseUrl = `https://api.openopus.org/work/detail/${req.params.workId}.json`;
-    console.log(baseUrl)
+  const baseUrl = `https://api.openopus.org/work/detail/${req.params.workId}.json`;
+  console.log(baseUrl);
 
-  try { ///for new composer check mongodb
+  try { 
+    // ✅ Check if it's a Mongo ObjectId → treat as local
+    if (/^[0-9a-fA-F]{24}$/.test(req.params.workId)) {
+      const localWork = await Work.findOne({ 
+        _id: req.params.workId, 
+        title: { $ne: "test" }   // 🚫 skip "test"
+      }).populate("composer");
 
-    if (!/^\d+$/.test(req.params.workId)) {
-      const localWork = await Work.findOne({ apiId: req.params.workId }).populate("composer");
       if (!localWork) return res.status(404).send("Work not found");
       return res.render("works/show.ejs", { 
         work: localWork, 
         genre: localWork.genre, 
         user: req.session.user 
       });
-}
+    }
 
-    let localWork = await Work.findOne({ apiId: req.params.workId }).populate("composer");
+    // Otherwise → try to load from DB by apiId
+    let localWork = await Work.findOne({ 
+      apiId: req.params.workId, 
+      title: { $ne: "test" }    // 🚫 skip "test"
+    }).populate("composer");
+
     if (localWork) {
       return res.render("works/show.ejs", { 
         work: localWork, 
@@ -184,49 +185,45 @@ router.get('/:workId', async (req, res) => {
         user: req.session.user 
       });
     }
-    ///make a call to the api above
+
+    // ✅ Fallback: OpenOpus API
     const data = await (await fetch(baseUrl)).json();
-
-
     if (!data || !data.work || !data.composer) {
       console.error("No work/composer found for", req.params.workId, data);
-      return res.redirect('/works');  //still didn't fix it but ...hmmm..come back to this
+      return res.redirect('/works');
     }
 
     const work = data.work;
     const composer = data.composer;
 
-    work.apiId= work.id
-    const w= await Work.findOne({apiId:work.id})
+    work.apiId = work.id;
+    const w = await Work.findOne({ apiId: work.id, title: { $ne: "test" } }); // 🚫 skip "test"
     if (!w) {
-  let c = await Composer.findOne({ apiId: composer.id });
-  if (!c) {
-    const composerData = { ///make sure to get all the data before creation --gather the information
-      apiId: composer.id,
-      name: composer.name,
-      completeName: composer.complete_name,
-      epoch: composer.epoch,
-      birthYear: composer.birth ? new Date(composer.birth).getFullYear() : null,
-      deathYear: composer.death ? new Date(composer.death).getFullYear() : null,
-      portrait: composer.portrait || null,
-    };
-    //if there is no composer create the composer in the DB
-    const newComposer = await Composer.create(composerData);
-    work.composer = newComposer._id;
-    c = newComposer;
-  } else {
-    work.composer = c._id;
-  }
-  ///now finish creating the word--
-  work.apiId = work.id; ///make sure that apiId matches work Id
-  const newWork = await Work.create(work);
-  let populated = await Work.findById(newWork._id).populate("composer"); // Re-fetch the new work and populate its composer reference
-  res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
-} else {  // If the work already exists in the DB, just fetch it and populate composer
-  let populated = await Work.findById(w._id).populate("composer");
-  res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
-}
-
+      let c = await Composer.findOne({ apiId: composer.id });
+      if (!c) {
+        const composerData = {
+          apiId: composer.id,
+          name: composer.name,
+          completeName: composer.complete_name,
+          epoch: composer.epoch,
+          birthYear: composer.birth ? new Date(composer.birth).getFullYear() : null,
+          deathYear: composer.death ? new Date(composer.death).getFullYear() : null,
+          portrait: composer.portrait || null,
+        };
+        const newComposer = await Composer.create(composerData);
+        work.composer = newComposer._id;
+        c = newComposer;
+      } else {
+        work.composer = c._id;
+      }
+      work.apiId = work.id;
+      const newWork = await Work.create(work);
+      let populated = await Work.findById(newWork._id).populate("composer");
+      res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
+    } else {
+      let populated = await Work.findById(w._id).populate("composer");
+      res.render("works/show.ejs", { work: populated, genre: populated.genre, user: req.session.user });
+    }
   } catch (err) {
     console.log(err);
     res.redirect('/');
@@ -234,18 +231,6 @@ router.get('/:workId', async (req, res) => {
 });
 
 
-
-
-
-// router.post('/', async (req, res) => {
-//   try {
-//     const newWork = await Work.create({ name: req.body.name });
-//     res.redirect('/works');
-//   } catch (error) {
-//     console.error('error saving work:', error);
-//     res.redirect('/');
-//   }
-// });
 
 // create the fav list
 router.post('/:workId/favorites', isSignedIn, async (req, res) => {
@@ -268,8 +253,12 @@ router.post('/:workId/favorites', isSignedIn, async (req, res) => {
 ///updating
 router.put('/:workId', async (req, res) => {
   try {
+    // ✅ Try both _id and apiId
+    const existingWork = await Work.findById(req.params.workId) 
+                      || await Work.findOne({ apiId: req.params.workId });
+    if (!existingWork) return res.status(404).send("Work not found");
+
     const updates = {
-      title: req.body.title,
       subtitle: req.body.subtitle || '',
       genre: req.body.genre || '',
       yearComposed: req.body.yearComposed || null,
@@ -278,17 +267,20 @@ router.put('/:workId', async (req, res) => {
       youTube: req.body.youTube || '',
     };
 
-     if (req.body.genreInput && req.body.genreInput.trim() !== "") {
+    if (existingWork.source && existingWork.source.toLowerCase() === "local") {
+      updates.title = req.body.title;
+    }
+
+    if (req.body.genreInput && req.body.genreInput.trim() !== "") {
       updates.genre = req.body.genreInput.trim();
     }
 
-
+    // handle composer input (same as before)
     if (req.body.composerInput && req.body.composerInput.trim() !== "") {
       const input = req.body.composerInput.trim();
       let composer;
 
       if (/^\d+$/.test(input)) {
-        // Numeric → treat as OpenOpus apiId
         const apiUrl = `https://api.openopus.org/composer/list/ids/${input}.json`;
         const data = await (await fetch(apiUrl)).json();
         const c = data.composers && data.composers[0];
@@ -308,7 +300,6 @@ router.put('/:workId', async (req, res) => {
           );
         }
       } else {
-        //go back to opus if probblems
         const apiUrl = `https://api.openopus.org/omnisearch/${encodeURIComponent(input)}/0.json`;
         const data = await (await fetch(apiUrl)).json();
         const c = data.results && data.results.find(r => r.composer)?.composer;
@@ -316,7 +307,7 @@ router.put('/:workId', async (req, res) => {
           composer = await Composer.findOneAndUpdate(
             { apiId: c.id.toString() },
             {
-              apiId: c.id.toString(), //so we can search it
+              apiId: c.id.toString(),
               name: c.name,
               completeName: c.complete_name,
               epoch: c.epoch,
@@ -334,19 +325,37 @@ router.put('/:workId', async (req, res) => {
       }
     }
 
-    const work = await Work.findOneAndUpdate(
-      { apiId: req.params.workId },
-      updates,  //updates has the new values
+    const updatedWork = await Work.findOneAndUpdate(
+      { _id: existingWork._id },
+      updates,
       { new: true }
     ).populate("composer");
 
-    if (!work) return res.status(404).send("Work not found");
-
-    res.redirect(`/works/${work.apiId}`);
+    res.redirect(`/works/${updatedWork.apiId}`);
   } catch (err) {
     console.error("Error updating work:", err);
     res.status(500).send(err.message);
   }
 });
+
+
+// Delete a work
+router.delete('/:workId', isSignedIn, async (req, res) => {
+  try {
+    // ✅ Try both _id and apiId
+    const work = await Work.findByIdAndDelete(req.params.workId) 
+              || await Work.findOneAndDelete({ apiId: req.params.workId });
+
+    if (!work) {
+      return res.status(404).send("Work not found");
+    }
+
+    res.redirect(`/composers/${work.composer}`);
+  } catch (err) {
+    console.error("Error deleting work:", err);
+    res.status(500).send("Error deleting work");
+  }
+});
+
 
 module.exports = router;
