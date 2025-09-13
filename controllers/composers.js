@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require("mongoose");
 const Composer = require("../models/composer");
 const UserComposer = require('../models/userComposer');
 const Work = require('../models/work');
@@ -284,18 +285,63 @@ router.get('/:composerId', async (req, res) => {
 
 //create the fav list
 router.post('/:composerId/favorites', isSignedIn, async (req, res) => {
-  const composer = await Composer.findOne({ apiId: req.params.composerId });
-  console.log(composer);
-  if (!composer.favoritedBy.includes(req.session.user._id)) {
-    composer.favoritedBy.push(req.session.user._id);
-    await composer.save();
-  } else {
-    composer.favoritedBy.remove(req.session.user._id);
-    await composer.save();
-  }
-  res.redirect(`/composers/${req.params.composerId}`);
-});
+  try {
+    const userId = req.session.user._id;
+    const { composerId } = req.params;
 
+    let composer;
+
+    // First try by Mongo ObjectId or apiId
+    if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
+      composer = await Composer.findById(composerId);
+    } else {
+      composer = await Composer.findOne({ apiId: composerId });
+    }
+
+    // If not found locally → fetch from OpenOpus and insert
+    if (!composer) {
+      const baseUrl = `https://api.openopus.org/composer/list/ids/${composerId}.json`;
+      const data = await (await fetch(baseUrl)).json();
+
+      if (!data.composers || !data.composers.length) {
+        return res.status(404).send("Composer not found");
+      }
+
+      const apiComposer = data.composers[0];
+      composer = await Composer.create({
+        apiId: apiComposer.id.toString(),
+        name: apiComposer.name,
+        completeName: apiComposer.complete_name,
+        epoch: apiComposer.epoch || null,
+        birthYear: apiComposer.birth ? new Date(apiComposer.birth).getFullYear() : null,
+        deathYear: apiComposer.death ? new Date(apiComposer.death).getFullYear() : null,
+        portrait: apiComposer.portrait || null,
+        favoritedBy: []
+      });
+    }
+
+    // Ensure favoritedBy exists
+    if (!Array.isArray(composer.favoritedBy)) {
+      composer.favoritedBy = [];
+    }
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    // Toggle favorite
+    if (!composer.favoritedBy.some(id => id.equals(userObjectId))) {
+      composer.favoritedBy.push(userObjectId);
+    } else {
+      composer.favoritedBy = composer.favoritedBy.filter(id => !id.equals(userObjectId));
+    }
+
+    await composer.save();
+
+    res.redirect(`/composers/${composer.apiId || composer._id}`);
+  } catch (err) {
+    console.error("Error toggling favorite:", err);
+    res.status(500).send("Error updating favorites");
+  }
+});
 
 
 ///updating
