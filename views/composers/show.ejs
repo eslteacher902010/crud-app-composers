@@ -48,7 +48,7 @@
             <% if (works && works.length) { %>
               <% works.forEach(function(work) { %>
                 <li>
-                  <a href="/works/<%= work._id || work.id %>">
+                  <a href="/works/<%= work.apiId %>">
                     <%= work.title || work.name %>
                   </a>
                 </li>
@@ -58,6 +58,9 @@
               <li><a href="/works/new">Add a work</a></li>
             <% } %>
           </ul>
+
+
+
 
           <a href="/composers/search/epoch?epoch=<%= epoch %>">Back to Search Results</a>
         </div>

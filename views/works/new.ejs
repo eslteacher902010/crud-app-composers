@@ -2,59 +2,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="/css/style.css" />
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Add a New Work</title>
 </head>
 <body>
   <section class="treble">
     <%- include('../partials/_navbar') %>
 
-<h1>Add a New Work</h1>
-<form action="/works" method="POST">
-  <div>
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required />
-  </div>
+    <h1>Add a New Work</h1>
+    <form action="/works" method="POST">
+      <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required />
+      </div>
 
-  <div>
-    <label for="subtitle">Subtitle:</label>
-    <input type="text" id="subtitle" name="subtitle" />
-  </div>
+      <div>
+        <label for="subtitle">Subtitle:</label>
+        <input type="text" id="subtitle" name="subtitle" />
+      </div>
 
-  <div>
-    <label for="yearComposed">Year Composed:</label>
-    <input type="number" id="yearComposed" name="yearComposed" />
-  </div>
+      <div>
+        <label for="yearComposed">Year Composed:</label>
+        <input type="number" id="yearComposed" name="yearComposed" />
+      </div>
 
-  <div>
-    <label for="catalogueSystem">Catalogue System:</label>
-    <input type="text" id="catalogueSystem" name="catalogueSystem" placeholder="e.g. K, BWV" />
-  </div>
+      <div>
+        <label for="catalogueSystem">Catalogue System:</label>
+        <input type="text" id="catalogueSystem" name="catalogueSystem" placeholder="e.g. K, BWV" />
+      </div>
 
-  <div>
-    <label for="catalogueNumber">Catalogue Number:</label>
-    <input type="text" id="catalogueNumber" name="catalogueNumber" />
-  </div>
+      <div>
+        <label for="catalogueNumber">Catalogue Number:</label>
+        <input type="text" id="catalogueNumber" name="catalogueNumber" />
+      </div>
 
-  <div>
-    <label for="genre">Genre:</label>
-    <input type="text" id="genre" name="genre" />
-  </div>
+      <div>
+        <label for="genre">Genre:</label>
+        <input type="text" id="genre" name="genre" />
+      </div>
 
-  <div>
-    <label for="youTube">YouTube Link:</label>
-    <input type="text" id="youTube" name="youTube" />
-  </div>
+      <div>
+        <label for="youTube">YouTube Link:</label>
+        <input type="text" id="youTube" name="youTube" />
+      </div>
 
-  <div>
-  <label for="composerName">Composer:</label>
-  <input type="text" id="composerName" name="composerName" placeholder="e.g. Beethoven"/>
-</div>
+      <div>
+        <label for="composerId">Composer:</label>
+        <select id="composerId" name="composerId" required>
+          <% composers.forEach(function(comp) { %>
+            <option value="<%= comp._id %>">
+              <%= comp.completeName || comp.name %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
 
-  <button type="submit">Add Work</button>
-</form>
-</section>
+      <button type="submit">Add Work</button>
+    </form>
+  </section>
 </body>
 </html>

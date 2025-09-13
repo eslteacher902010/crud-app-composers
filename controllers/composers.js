@@ -114,7 +114,6 @@ router.get('/search/epoch', async (req, res) => {
 
 
 ///edit
-///edit
 router.get('/:composerId/edit', isSignedIn, async (req, res) => {
   try {
     const { composerId } = req.params;
@@ -158,22 +157,25 @@ router.get('/:composerId', async (req, res) => {
     const { composerId } = req.params;
     let composer, works;
 
-    // this gets complicated because i'm trying to make sure the composer really shows up
+    // Handle when the ID is a MongoDB ObjectId
     if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
-      // It's a MongoDB _id
       composer = await Composer.findById(composerId);
       if (!composer) return res.redirect('/');
 
-      const worksRes = await fetch(
-        `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
-      );
-      const worksData = await worksRes.json();
-      const apiWorks = worksData.works || [];
+      // Only fetch OpenOpus API works if this composer has an apiId
+      let apiWorks = [];
+      if (composer.apiId) {
+        const worksRes = await fetch(
+          `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
+        );
+        const worksData = await worksRes.json();
+        apiWorks = worksData.works || [];
+      }
 
-      // also grab works saved locally
+      // Always grab local works saved in MongoDB
       const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
 
-      // merge DB and API works
+      // Merge DB and API works
       works = [...dbWorks, ...apiWorks];
 
       return res.render("composers/show.ejs", { 
@@ -184,18 +186,18 @@ router.get('/:composerId', async (req, res) => {
       });
 
     } else {
-      // It's an OpenOpus API id--no letters
+      // Handle when the ID is an OpenOpus API id (all digits)
       const baseUrl = `https://api.openopus.org/composer/list/ids/${composerId}.json`;
       const data = await (await fetch(baseUrl)).json();
       if (!data.composers || !data.composers.length) return res.redirect('/');
 
       const apiComposer = data.composers[0];
 
-      // update or insert the local copy
+      // Update or insert the local copy of the composer
       composer = await Composer.findOneAndUpdate(
         { apiId: apiComposer.id },
         {
-          $set: { /// only change the fields i'm giving to it
+          $set: {
             name: apiComposer.name,
             completeName: apiComposer.complete_name,
             birthYear: new Date(apiComposer.birth).getFullYear(),
@@ -207,17 +209,17 @@ router.get('/:composerId', async (req, res) => {
         { new: true, upsert: true }
       );
 
-      // fetch by saved ID--safety
+      // Fetch OpenOpus works by API id
       const worksRes = await fetch(
         `https://api.openopus.org/work/list/composer/${composer.apiId}/genre/Popular.json`
       );
       const worksData = await worksRes.json();
       const apiWorks = worksData.works || [];
 
-      // let's see the new composer
+      // Also fetch local works tied to this composer
       const dbWorks = await Work.find({ composer: composer._id }).sort({ createdAt: -1 });
 
-      // merge them together so i can see both
+      // Merge DB and API works
       works = [...dbWorks, ...apiWorks];
 
       return res.render("composers/show.ejs", { 
@@ -233,6 +235,7 @@ router.get('/:composerId', async (req, res) => {
     res.redirect('/');
   }
 });
+
 
 
 
