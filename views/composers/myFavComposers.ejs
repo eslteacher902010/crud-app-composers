@@ -1,36 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css" />
-  <title>My Favorite Composers</title>
-</head>
-<body>
-  <section class="treble">
-    <%- include('../partials/_navbar') %>
-    <p class="favs-text">All My Favorite Composers</p>
+<div class="position-relative py-5 bg-light angled-bg">
+  <div class="container position-relative">
+    <h1 class="text-center mb-4">My Favorite Composers</h1>
 
     <% if (composers && composers.length) { %>
-      <ul class="favs-page">
+      <div class="row g-4">
         <% composers.forEach((composer) => { %>
-          <li class="favs-page">
-            <div>
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 shadow-sm">
               <% if (composer.portrait) { %>
-                <img src="<%= composer.portrait %>" alt="<%= composer.name %> portrait" />
+                <img src="<%= composer.portrait %>" 
+                     alt="<%= composer.name %> portrait" 
+                     class="card-img-top img-fluid" 
+                     style="object-fit: cover; height: 250px;">
               <% } %>
-              <p>
-                <a href="/composers/<%= composer.source === 'local' || !composer.apiId ? composer._id : composer.apiId %>">
-                  <%= composer.completeName || composer.name %>
-                </a>
-              </p>
+              <div class="card-body text-center">
+                <h5 class="card-title mb-0">
+                  <a href="/composers/<%= composer.source === 'local' || !composer.apiId ? composer._id : composer.apiId %>" 
+                     class="stretched-link text-decoration-none text-dark">
+                    <%= composer.completeName || composer.name %>
+                  </a>
+                </h5>
+              </div>
             </div>
-          </li>
+          </div>
         <% }) %>
-      </ul>
+      </div>
     <% } else { %>
-      <p>You don’t have any favorite composers yet.</p>
+      <div class="alert alert-info text-center">
+        You don’t have any favorite composers yet.
+      </div>
     <% } %>
-  </section>
-</body>
-</html>
+  </div>
+</div>

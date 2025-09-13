@@ -1,126 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/style.css" />
-    <title>Composers-Crud</title>
-</head>
-<body>
-    <section class="fiery-classical">
-    <%- include('partials/_navbar') %>
-    <h1>Welcome to the Composers and Classical Music Encyclopedia!</h1>
-    
-       <h2>Search by Composer Name</h2>
-    
-    <form action="/composers/search" method="GET">
-        <input type="text" class="search-box" name="search" id="searchBar"/>
-        <button class="mango-button" type="submit">Search</button> 
-    </form>
+<main>
+  <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
+    <div class="col-md-10 col-lg-8 p-lg-5 mx-auto my-5">
 
+      <!-- Hero heading -->
+      <h1 class="display-4 fw-bold">Welcome to the Composers and Classical Music Encyclopedia!</h1>
+      <p class="fw-normal text-muted mb-5">
+        Search composers, works, epochs, and more.
+      </p>
 
-    <h2>Search by Epoch</h2>
+      <!-- === Logged-in Only Quick Links === -->
+      <% if (user) { %>
+        <div class="mb-5">
+          <h2 class="h5 text-primary mb-3"> Quick Links</h2>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="/composers/favorites" class="btn btn-outline-dark">🎼 Favorite Composers</a>
+            <a href="/works/favorites" class="btn btn-outline-dark">🎶 Favorite Works</a>
+            <a href="/composers/new" class="btn btn-outline-dark">➕ Add Composer</a>
+            <a href="/works/new" class="btn btn-outline-dark">➕ Add Work</a>
+          </div>
+        </div>
+      <% } %>
 
-    <form action="/composers/search/epoch" method="GET">
-        <select name="epoch"> 
-            <option value="Medieval">Medieval</option>     
-            <option value="Renaissance">Renaissance</option>     
-            <option value="Baroque">Baroque</option>     
-            <option value="Classical">Classical</option>     
-            <option value="Early Romantic">Early Romantic</option>     
-            <option value="Romantic">Romantic</option>     
-            <option value="Late Romantic">Late Romantic</option>     
-            <option value="20th Century">20th Century</option>     
-            <option value="Post-War">Post-War</option>     
-            <option value="21st Century">21st Century</option>     
-        </select> 
+      <!-- === Recently Added (always visible, but optional filter if logged in) === -->
+      <div class="card shadow-sm mb-5">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Recently Added Composers</h2>
+          <p class="text-muted">See the latest entries in the database.</p>
+          <a href="/composers/recent" class="btn btn-primary">View Recently Added</a>
+        </div>
+      </div>
 
-        
-        <button class="mango-button" type="submit">Search</button> 
-    </form>
+      <!-- === Search by Composer Name === -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Search by Composer Name</h2>
+          <form action="/composers/search" method="GET" class="d-flex justify-content-center gap-2">
+            <input type="text" class="form-control w-50" name="search" id="searchBar" />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
 
-      <h2>Search by Composer or Work Name</h2>
+      <!-- === Search by Epoch === -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Search by Epoch</h2>
+          <form action="/composers/search/epoch" method="GET" class="d-flex justify-content-center gap-2">
+            <select class="form-select w-50" name="epoch">
+              <option value="Medieval">Medieval</option>
+              <option value="Renaissance">Renaissance</option>
+              <option value="Baroque">Baroque</option>
+              <option value="Classical">Classical</option>
+              <option value="Early Romantic">Early Romantic</option>
+              <option value="Romantic">Romantic</option>
+              <option value="Late Romantic">Late Romantic</option>
+              <option value="20th Century">20th Century</option>
+              <option value="Post-War">Post-War</option>
+              <option value="21st Century">21st Century</option>
+            </select>
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
 
-      <form action="/works/search" method="GET">
-        <input type="text" class="search-box" name="search" id="searchBar" placeholder="Beethoven or Symphony 5"/>
-        <button class="mango-button" type="submit">Search</button> 
-    </form>
+      <!-- === Search by Composer or Work Name === -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Search by Composer or Work Name</h2>
+          <form action="/works/search" method="GET" class="d-flex justify-content-center gap-2">
+            <input type="text" class="form-control w-50" name="search" placeholder="Beethoven or Symphony 5" />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
 
-    <h2>Search By Popular Composer ID + Genre</h2>
+      <!-- === Search by Popular Composer + Genre === -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Search By Popular Composer ID + Genre</h2>
+          <form action="/works/search/genre" method="GET" class="row g-2 justify-content-center">
+            <div class="col-md-5">
+              <select class="form-select" name="composerId" required>
+                <option value="87">Johann (Bach)</option>
+                <option value="145">Ludwig (Beethoven)</option>
+                <option value="80">Johannes (Brahms)</option>
+                <option value="152">Frédéric (Chopin)</option>
+                <option value="105">Claude (Debussy)</option>
+                <option value="189">Antonín (Dvořák)</option>
+                <option value="136">George (Gershwin)</option>
+                <option value="67">George (Handel)</option>
+                <option value="208">Franz (Haydn)</option>
+                <option value="197">Franz (Liszt)</option>
+                <option value="77">Gustav (Mahler)</option>
+                <option value="147">Felix (Mendelssohn)</option>
+                <option value="196">Wolfgang (Mozart)</option>
+                <option value="146">Giacomo (Puccini)</option>
+                <option value="57">Maurice (Ravel)</option>
+                <option value="183">Franz (Schubert)</option>
+                <option value="129">Robert (Schumann)</option>
+                <option value="165">Johann (Strauss Jr)</option>
+                <option value="190">Igor (Stravinsky)</option>
+                <option value="79">Pyotr (Tchaikovsky)</option>
+                <option value="35">Giuseppe (Verdi)</option>
+                <option value="98">Antonio (Vivaldi)</option>
+                <option value="138">Richard (Wagner)</option>
+              </select>
+            </div>
+            <div class="col-md-5">
+              <select class="form-select" name="genre" required>
+                <option value="Chamber">Chamber</option>
+                <option value="Keyboard">Keyboard</option>
+                <option value="Orchestral">Orchestral</option>
+                <option value="Stage">Stage</option>
+                <option value="Vocal">Vocal</option>
+                <option value="Popular">Popular</option>
+                <option value="Recommended">Recommended</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-primary w-100" type="submit">Search</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-    <form action="/works/search/genre" method="get">
-     <label class="wonky-search"  for="composerId"><strong>Choose a Composer:</strong></label>
-<select name="composerId" id="composerId" required>
-  <option value="87">Johann (Bach)</option>
-  <option value="145">Ludwig (Beethoven)</option>
-  <option value="80">Johannes (Brahms)</option>
-  <option value="152">Frédéric (Chopin)</option>
-  <option value="105">Claude (Debussy)</option>
-  <option value="189">Antonín (Dvořák)</option>
-  <option value="136">George (Gershwin)</option>
-  <option value="67">George (Handel)</option>
-  <option value="208">Franz (Haydn)</option>
-  <option value="197">Franz (Liszt)</option>
-  <option value="77">Gustav (Mahler)</option>
-  <option value="147">Felix (Mendelssohn)</option>
-  <option value="196">Wolfgang (Mozart)</option>
-  <option value="146">Giacomo (Puccini)</option>
-  <option value="57">Maurice (Ravel)</option>
-  <option value="183">Franz (Schubert)</option>
-  <option value="129">Robert (Schumann)</option>
-  <option value="165">Johann (Strauss Jr)</option>
-  <option value="190">Igor (Stravinsky)</option>
-  <option value="79">Pyotr (Tchaikovsky)</option>
-  <option value="35">Giuseppe (Verdi)</option>
-  <option value="98">Antonio (Vivaldi)</option>
-  <option value="138">Richard (Wagner)</option>
-</select>
+      <!-- === Search My Added Composers (logged in only) === -->
+      <% if (user) { %>
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Search My Added Composers</h2>
+          <form action="/composers/search/local" method="GET" class="d-flex justify-content-center gap-2">
+            <input type="text" class="form-control w-50" name="search" placeholder="Search your own composers..." />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
 
-      
+      <!-- === Search My Added Works (logged in only) === -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5 text-primary mb-3">Search My Added Works</h2>
+          <form action="/works/search/local" method="GET" class="d-flex justify-content-center gap-2">
+            <input type="text" class="form-control w-50" name="search" placeholder="Search your own works..." />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+      <% } %>
 
-      <label class="wonky-search" for="genre"><strong>Genre:</strong></label>
-      <select name="genre" id="genre" required>
-        <option value="Chamber">Chamber</option>
-        <option value="Keyboard">Keyboard</option>
-        <option value="Orchestral">Orchestral</option>
-        <option value="Stage">Stage</option>
-        <option value="Vocal">Vocal</option>
-        <option value="Popular">Popular</option>
-        <option value="Recommended">Recommended</option>
-      </select>
-
-      <button class="mango-button" type="submit">Search</button>
-    </form>
-  
-    <h2>Search My Added Composers</h2>
-
-<form action="/composers/search/local" method="GET">
-  <input 
-    type="text" 
-    class="wonky-search" 
-    name="search" 
-    id="localSearchBar" 
-    placeholder="Search your own composers..."
-  />
-  <button class="mango-button" type="submit">Search</button> 
-</form>
-
-<h2>Search My Added Works</h2>
-
-<form action="/works/search/local" method="GET">
-  <input 
-    type="text" 
-    class="wonky-search" 
-    name="search" 
-    id="localWorkSearchBar" 
-    placeholder="Search your own works..."
-  />
-  <button class="mango-button" type="submit">Search</button> 
-</form>
-
-
-</section>
-
-</body>
-</html>
-
+    </div>
+  </div>
+</main>

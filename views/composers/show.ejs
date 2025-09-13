@@ -1,76 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= composer.name || composer.completeName %></title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
-    <section class="sparkly-classical">
-      <%- include('../partials/_navbar') %>
-
-      <div class="composer-details">
-        <div>
-          <h1><%= composer.name %></h1>
-          <img src="<%= composer.portrait %>" alt="composer portrait" />
-          <p><strong>Complete Name:</strong> <%= composer.completeName %></p>
-          <p><strong>Born:</strong> <%= composer.birthYear %></p>
-          <p><strong>Died:</strong> <%= composer.deathYear %></p>
-
-          <% if (composer.nationality) { %>
-            <p><strong>Nationality:</strong> <%= composer.nationality %></p>
-          <% } %>
-
-          <% if (composer.sex) { %>
-            <p><strong>Sex:</strong> <%= composer.sex %></p>
-          <% } %>
-
-          <% if (composer.biography) { %>
-            <h3>Biography</h3>
-            <p><%= composer.biography %></p>
-          <% } %>
-
-          <form method="POST" action="/composers/<%= composer.apiId || composer._id %>/favorites">
-            <% if (user && composer.favoritedBy.includes(user._id)) { %>
-              <button class="favorite-button" type="submit">Remove Composer from Favorites</button>
-            <% } else { %>
-              <button class="favorite-button" type="submit">Add Composer to Favorites</button>
-            <% } %>
-          </form>
-
-          <% if (user) { %>
-            <a href="/composers/<%= composer.apiId || composer._id %>/edit">Edit Composer</a>
-          <% } %>
-
-          <h2>Popular Works</h2>
-          <ul>
-            <% if (works && works.length) { %>
-              <% works.forEach(function(work) { %>
-                <li>
-                  <a href="/works/<%= work.apiId || work._id || work.id %>">
-                    <%= work.title || work.name %>
-                  </a>
-                </li>
-              <% }) %>
-            <% } %>
-
-            <% 
-              // ✅ calculate how many "Add Work" links are needed
-              const remainingSlots = Math.max(0, 3 - (works ? works.length : 0)); 
-              for (let i = 0; i < remainingSlots; i++) { 
-            %>
-              <li>
-                <a href="/works/new?composerId=<%= composer._id || composer.apiId %>">
-                  Add Work
-                </a>
-              </li>
-            <% } %>
-          </ul>
-
-          <a href="/composers/search/epoch?epoch=<%= epoch %>">Back to Search Results</a>
-        </div>
+<div class="container py-5">
+  <div class="card shadow-lg mx-auto" style="max-width: 800px;">
+    <div class="card-body">
+      <!-- Composer Header -->
+      <h1 class="card-title text-center mb-3"><%= composer.name %></h1>
+      <div class="text-center mb-4">
+        <% if (composer.portrait) { %>
+          <img src="<%= composer.portrait %>" alt="Portrait of <%= composer.name %>"
+               class="img-fluid rounded shadow-sm" style="max-height: 250px;">
+        <% } else { %>
+          <span class="text-muted fst-italic">No portrait available</span>
+        <% } %>
       </div>
-    </section>
-  </body>
-</html>
+
+      <!-- Composer Info -->
+      <ul class="list-group list-group-flush mb-4">
+        <li class="list-group-item"><strong>Complete Name:</strong> <%= composer.completeName %></li>
+        <li class="list-group-item"><strong>Born:</strong> <%= composer.birthYear %></li>
+        <li class="list-group-item"><strong>Died:</strong> <%= composer.deathYear %></li>
+        <% if (composer.nationality) { %>
+          <li class="list-group-item"><strong>Nationality:</strong> <%= composer.nationality %></li>
+        <% } %>
+        <% if (composer.sex) { %>
+          <li class="list-group-item"><strong>Sex:</strong> <%= composer.sex %></li>
+        <% } %>
+      </ul>
+
+      <!-- Biography -->
+      <% if (composer.biography) { %>
+        <div class="mb-4">
+          <h4>Biography</h4>
+          <p class="text-muted"><%= composer.biography %></p>
+        </div>
+      <% } %>
+
+      <!-- Favorites / Edit -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <form method="POST" action="/composers/<%= composer.apiId || composer._id %>/favorites">
+          <% if (user && composer.favoritedBy.includes(user._id)) { %>
+            <button class="btn btn-danger">Remove from Favorites</button>
+          <% } else { %>
+            <button class="btn btn-outline-danger">Add to Favorites</button>
+          <% } %>
+        </form>
+
+        <% if (user) { %>
+          <a href="/composers/<%= composer.apiId || composer._id %>/edit" class="btn btn-primary">Edit Composer</a>
+        <% } %>
+      </div>
+
+      <!-- Works -->
+      <h4 class="mb-3">Popular Works</h4>
+      <% if (works && works.length) { %>
+        <ul class="list-group mb-4">
+          <% works.forEach(function(work) { %>
+            <li class="list-group-item">
+              <a href="/works/<%= work.apiId || work._id || work.id %>" class="text-decoration-none">
+                <%= work.title || work.name %>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <!-- Add Work Slots -->
+      <% 
+        const remainingSlots = Math.max(0, 3 - (works ? works.length : 0)); 
+        for (let i = 0; i < remainingSlots; i++) { 
+      %>
+        <a href="/works/new?composerId=<%= composer._id || composer.apiId %>" 
+           class="btn btn-outline-secondary btn-sm d-block mb-2">+ Add Work</a>
+      <% } %>
+
+      <!-- Back Link -->
+      <div class="text-center mt-4">
+        <a href="/composers/search/epoch?epoch=<%= epoch %>" class="btn btn-outline-dark">Back to Search Results</a>
+      </div>
+    </div>
+  </div>
+</div>

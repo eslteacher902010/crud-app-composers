@@ -1,78 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= work.title || title.subtitle %></title>
-    <link rel="stylesheet" href="/css/style.css" />
+<div class="container py-5">
+  <div class="card shadow mx-auto" style="max-width: 850px;">
+    <div class="card-body p-5">
+      <!-- Work Title -->
+      <h1 class="text-center mb-4"><%= work.title %></h1>
 
-  </head>
-  <body>
+      <!-- Work Details -->
+      <div class="mb-4">
+        <p><strong>Genre:</strong> <%= work.genre || "—" %></p>
 
-     <section class="sparkly-classical">
-    <%- include('../partials/_navbar') %>
+        <% if (work.composer) { %>
+          <p><strong>Composer:</strong> 
+            <a href="/composers/<%= work.composer.apiId || work.composer._id %>" class="text-decoration-none">
+              <%= work.composer.completeName %>
+            </a>
+          </p>
+        <% } %>
 
-  <div class="work-details">
-    <div>
-    <h1><%= work.title %></h1>
-      
-    <p><strong>Title of Work:</strong> <%= work.title %><p>
-    <p><strong>Genre:</strong> <%= work.genre %></p>
+        <% if (work.yearComposed) { %>
+          <p><strong>Year Composed:</strong> <%= work.yearComposed %></p>
+        <% } %>
 
-    <% if (work.composer) { %>
-  <p><strong>Composer:</strong> <%= work.composer.completeName %></p>
-<% } %>
+        <% if (work.catalogueSystem) { %>
+          <p><strong>Catalogue System:</strong> <%= work.catalogueSystem %></p>
+        <% } %>
 
-    <% if (work.yearComposed) { %>
-  <p><strong>Year Composed:</strong> <%= work.yearComposed %></p>
-<% } %>
+        <% if (work.catalogueNumber) { %>
+          <p><strong>Catalogue Number:</strong> <%= work.catalogueNumber %></p>
+        <% } %>
+      </div>
 
+      <!-- YouTube Preview -->
+      <% if (work.youTube) { 
+        const embedUrl = work.youTube.replace("watch?v=", "embed/");
+      %>
+        <div class="mb-5">
+          <a href="<%= work.youTube %>" target="_blank" class="btn btn-outline-secondary mb-3">
+            Watch on YouTube
+          </a>
+          <div class="ratio ratio-16x9 rounded shadow-sm">
+            <iframe 
+              src="<%= embedUrl %>"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      <% } %>
 
- <% if (work.catalogueSystem) { %>
-    <p>Catalogue System (e.g. "K" in Mozart's K.545):</p>
-    <p><%= work.catalogueSystem %></p>
-    <% } %>
+      <!-- Favorites Button -->
+      <div class="mb-4">
+        <form method="POST" action="/works/<%= work.apiId || work._id %>/favorites">
+          <% if (user && work.favoritedBy.includes(user._id)) { %>
+            <button class="btn btn-danger w-100" type="submit">Remove Work from Favorites</button>
+          <% } else { %>
+            <button class="btn btn-success w-100" type="submit">Add Work to Favorites</button>
+          <% } %>
+        </form>
+      </div>
 
- <% if (work.catalogueNumber) { %>
- <p>Catalogue Number(e.g. the number after the K in Mozart's K. 545):</p>
-    <p><%= work.catalogueNumber %></p>
-    <% } %>
-
-
-<% if (work.youTube) { 
-     const embedUrl = work.youTube.replace("watch?v=", "embed/");
-%>
-  <p>
-    <a href="<%= work.youTube %>" target="_blank">Watch on YouTube</a>
-  </p>
-  <div class="video-preview">
-    <iframe width="560" height="315"
-      src="<%= embedUrl %>"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+      <!-- Edit + Back -->
+      <div class="d-flex justify-content-between">
+        <% if (user) { %>
+          <a href="/works/<%= work.apiId || work._id %>/edit" class="btn btn-outline-primary">Edit Work</a>
+        <% } %>
+        <a href="/works" class="btn btn-outline-secondary">Back to Works</a>
+      </div>
+    </div>
   </div>
-<% } %>
-
-
-
-<form method="POST" action="/works/<%= work.apiId %>/favorites">
-   <% if (user && work.favoritedBy.includes(user._id)) { %>
-  <button class= "favorite-button" type="submit">Remove Work from Favorites</button>
-  <% } else{ %>
-    <button class= "favorite-button" type="submit">Add Work to Favorites</button>
-  <% } %>
-</form>
-
-
-
-<% if (user) { %>
-  <a href="/works/<%= work.apiId %>/edit">Edit Work</a>
-<% } %>
-
-  </section>
-
-  </body>
-</html>
+</div>

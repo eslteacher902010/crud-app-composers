@@ -1,48 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css" />
-  <title>All Composers</title>
-</head>
-<body>
-  <section class="fiery-classical">
-    <%- include('../partials/_navbar') %>
-    <p>All Composers</p>
+<!-- views/composers/index.ejs -->
+<div class="container py-5">
+  <h1 class="text-center mb-4">All Composers</h1>
 
-    <% if (newComposer) { %>
-      <div class="composer-card">
-        <img src="<%= newComposer.portrait %>" alt="<%= newComposer.name %>" />
-        <p class="composer-text">
-          <a href="/composers/<%= newComposer.apiId %>" class="composer-link">
+  <% if (newComposer) { %>
+    <div class="card shadow-sm mb-4 mx-auto" style="max-width: 400px;">
+      <% if (newComposer.portrait) { %>
+        <img src="<%= newComposer.portrait %>" class="card-img-top" alt="<%= newComposer.name %>">
+      <% } %>
+      <div class="card-body text-center">
+        <h5 class="card-title">
+          <a href="/composers/<%= newComposer.apiId %>" class="stretched-link text-decoration-none">
             <%= newComposer.name %>
           </a>
-        </p>
+        </h5>
       </div>
-    <% } %>
+    </div>
+  <% } %>
 
-    <% if (composers && composers.length) { %>
-      <ul class="composer-list">
-        <% composers.forEach((composer) => { %>
-          <li class="composer-item">
-            <div class="composer-card">
-              <img src="<%= composer.portrait %>" alt="<%= composer.name %>" />
-              <p class="composer-text">
-                <a href="/composers/<%= composer.id %>" class="composer-link">
+  <% if (composers && composers.length) { %>
+    <div class="row g-4">
+      <% composers.forEach((composer) => { %>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <div class="card h-100 shadow-sm">
+            <% if (composer.portrait) { %>
+              <img src="<%= composer.portrait %>" class="card-img-top" alt="<%= composer.name %>">
+            <% } %>
+            <div class="card-body text-center">
+              <h5 class="card-title mb-0">
+                <a href="/composers/<%= composer.id %>" class="stretched-link text-decoration-none">
                   <%= composer.name %>
                 </a>
-              </p>
+              </h5>
             </div>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else if (!composers && !newComposer) { %>
-      <p>No composer found in OpenOpus.</p>
-      <a href="/composers/new?name=<%= search %>">Add this composer manually</a>
-    <% } %>
-
-  </section>
-</body>
-</html>
-
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else if (!composers && !newComposer) { %>
+    <div class="alert alert-warning text-center">
+      No composer found in OpenOpus.
+      <a href="/composers/new?name=<%= search %>" class="alert-link ms-1">Add this composer manually</a>
+    </div>
+  <% } %>
+</div>

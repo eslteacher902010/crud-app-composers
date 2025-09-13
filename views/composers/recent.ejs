@@ -1,44 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="/css/style.css" />
-  <title>Document</title>
-</head>
-<body>
-<section class="sparkly-classical">
-<%- include('../partials/_navbar') %>
+<h2 class="text-center mb-4">Recently Added Composers</h2>
 
-<h2 class="recents">Recently Added Composers</h2>
-<ul class="recently-added">
-  <% if (composers && composers.length) { %>
-    <% composers.forEach(function(composer) { %>
-      <li>
-        <a href="/composers/<%= composer._id %>">
-          <%= composer.completeName || composer.name %>
-        </a>
-        <small>(Added <%= composer.createdAt.toDateString() %>)</small>
-      </li>
+<% if (composers && composers.length) { %>
+  <div class="row g-4">
+    <% composers.forEach((composer) => { %>
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm">
+          <% if (composer.portrait) { %>
+            <img src="<%= composer.portrait %>" 
+                 class="card-img-top" 
+                 alt="<%= composer.name %>" 
+                 style="object-fit: cover; height: 200px;">
+          <% } %>
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="/composers/<%= composer._id %>" class="text-decoration-none text-dark">
+                <%= composer.completeName || composer.name %>
+              </a>
+            </h5>
+            <p class="card-text">
+              <small class="text-muted">Added <%= composer.createdAt.toDateString() %></small>
+            </p>
+          </div>
+        </div>
+      </div>
     <% }) %>
-  <% } else { %>
-    <li>No composers have been added yet.</li>
-  <% } %>
-</ul>
+  </div>
+<% } else { %>
+  <div class="alert alert-info text-center">No composers have been added yet.</div>
+<% } %>
 
-<h2 class="recents">Recently Added Works</h2>
-<ul class="recently-added">
-  <% if (works && works.length) { %>
-    <% works.forEach(function(work) { %>
-      <li>
-        <a href="/works/<%= work._id %>"><%= work.title %></a>
-        <small>(Added <%= work.createdAt.toDateString() %>)</small>
-      </li>
+<hr class="my-5">
+
+<h2 class="text-center mb-4">Recently Added Works</h2>
+
+<% if (works && works.length) { %>
+  <div class="row g-4">
+    <% works.forEach((work) => { %>
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="/works/<%= work._id %>" class="text-decoration-none text-dark">
+                <%= work.title %>
+              </a>
+            </h5>
+            <p class="card-text">
+              <small class="text-muted">Added <%= work.createdAt.toDateString() %></small>
+            </p>
+          </div>
+        </div>
+      </div>
     <% }) %>
-  <% } else { %>
-    <li>No works have been added yet.</li>
-  <% } %>
-</ul>
-</section>
-</body>
-</html>
+  </div>
+<% } else { %>
+  <div class="alert alert-info text-center">No works have been added yet.</div>
+<% } %>

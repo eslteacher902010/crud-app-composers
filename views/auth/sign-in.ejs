@@ -1,27 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-  <title>Sign In</title>
-</head>
-<body>
-  <section class="treble">
-  <%- include('../partials/_navbar.ejs') %>
-
-  <div class="crazy-text"> 
-    <h1>Sign in</h1>
+<h1 class="text-center mb-4">Sign In</h1>
+<div class="card shadow mx-auto" style="max-width: 400px;">
+  <div class="card-body">
     <form action="/auth/sign-in" method="POST">
-      <label class="sign-in" for="username">Username:</label>
-      <input type="text" class="sign-in" name="username" id="username" required />
+      <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="username" name="username" placeholder="Your username" required>
+        <label for="username">Username</label>
+      </div>
 
-      <label class="sign-in" for="password">Password:</label>
-      <input type="password" class="sign-in" name="password" id="password" required />
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+        <label for="password">Password</label>
+      </div>
 
-      <button class=sign-in-button type="submit">Sign in</button>
+      <div class="form-check text-start mb-3">
+        <input class="form-check-input" type="checkbox" value="remember-me" id="rememberMe">
+        <label class="form-check-label" for="rememberMe">Remember me</label>
+      </div>
+
+      <button class="btn btn-primary w-100 py-2" type="submit">Sign In</button>
     </form>
   </div>
-</section>
-</body>
-</html>
+</div>

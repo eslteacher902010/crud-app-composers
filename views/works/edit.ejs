@@ -1,105 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Work</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
+<div class="container py-5">
+  <div class="card shadow-lg mx-auto" style="max-width: 700px;">
+    <div class="card-body p-4">
+      <h1 class="text-center mb-3">Edit Work</h1>
+      <p class="text-muted text-center mb-4">
+        <strong>Note:</strong> Use this form to update or add information about the work.
+        Database information from OpenOpus will not be changed (except for local works).
+      </p>
 
-  <body>
-    <section class="treble">
-      <div class="edit-page">
-        <h1>Edit Work</h1>
+      <!-- ✅ Update form -->
+      <form action="/works/<%= work.apiId || work._id %>?_method=PUT" method="POST">
+        <input type="hidden" name="_method" value="PUT" />
 
-        <p><strong>Note:</strong> The purpose of this page is to just add more information. 
-        Not to change the database’s existing information (except for local works).</p>
-
-        <!-- ✅ Update form wraps everything -->
-        <form action="/works/<%= work.apiId %>?_method=PUT" method="POST">
-
-          <!-- ✅ Editable title if local, read-only otherwise -->
-          <% if (work.source && work.source.toLowerCase().trim() === "local") { %>
-            <div class="form-group">
-              <label for="title">Title:</label>
-              <input 
-                type="text" 
-                id="title" 
-                name="title" 
-                value="<%= work.title %>" 
-                required
-              />
-            </div>
-          <% } else { %>
-            <h3><%= work.title || work.subtitle %></h3>
-          <% } %>
-
-          <% if (work.composer) { %>
-            <div class="form-group">
-              <label for="composer">Composer:</label>
-              <p>
-                <a href="/composers/<%= work.composer.apiId %>">
-                  <%= work.composer.completeName %>
-                </a>
-                |
-                <a href="https://openopus.org/composer/detail/<%= work.composer.apiId %>" target="_blank">
-                  OpenOpus Profile
-                </a>
-              </p>
-              <input type="hidden" id="composer" name="composerInput" value="<%= work.composer._id %>" />
-            </div>
-          <% } else { %>
-            <div class="form-group">
-              <label for="composer">Composer (apiId or name):</label>
-              <input 
-                type="text" 
-                id="composer" 
-                name="composerInput" 
-                placeholder="Enter OpenOpus composer ID or name" 
-              />
-              <small>
-                Tip: You can look up a composer on 
-                <a href="https://openopus.org/composer/list/popular" target="_blank">OpenOpus</a>
-              </small>
-            </div>
-          <% } %>
-
-          <div class="form-group">
-            <label for="genre">Genre:</label>
-            <input 
-              type="text" 
-              id="genre" 
-              name="genreInput" 
-              value="<%= work.genre || '' %>" 
-              placeholder="Enter genre (e.g. Symphony, Chamber, Opera...)" 
-            />
+        <!-- Editable Title (local only) -->
+        <% if (work.source && work.source.toLowerCase().trim() === "local") { %>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="title" name="title" 
+                   value="<%= work.title %>" placeholder="Title" required>
+            <label for="title">Title</label>
           </div>
+        <% } else { %>
+          <h3 class="text-center mb-3"><%= work.title || work.subtitle %></h3>
+        <% } %>
 
-          <div class="form-group">
-            <label for="yearComposed">Year Composed:</label>
-            <input type="text" id="yearComposed" name="yearComposed" value="<%= work.yearComposed %>" />
+        <!-- Composer Info -->
+        <% if (work.composer) { %>
+          <div class="mb-3">
+            <label class="form-label">Composer</label>
+            <p>
+              <a href="/composers/<%= work.composer.apiId %>">
+                <%= work.composer.completeName %>
+              </a>
+              |
+              <a href="https://openopus.org/composer/detail/<%= work.composer.apiId %>" target="_blank">
+                OpenOpus Profile
+              </a>
+            </p>
+            <input type="hidden" name="composerInput" value="<%= work.composer._id %>" />
           </div>
-
-          <div class="form-group">
-            <label for="catalogueSystem">Catalogue System (e.g. "K" in Mozart's K.545):</label>
-            <input type="text" id="catalogueSystem" name="catalogueSystem" value="<%= work.catalogueSystem %>" />
+        <% } else { %>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="composer" name="composerInput"
+                   placeholder="Enter OpenOpus composer ID or name">
+            <label for="composer">Composer (apiId or name)</label>
+            <small class="text-muted">
+              Tip: Look up a composer on 
+              <a href="https://openopus.org/composer/list/popular" target="_blank">OpenOpus</a>
+            </small>
           </div>
+        <% } %>
 
-          <div class="form-group">
-            <label for="catalogueNumber">Catalogue Number (e.g. the number after the K in Mozart's K. 545):</label>
-            <input type="text" id="catalogueNumber" name="catalogueNumber" value="<%= work.catalogueNumber %>" />
-          </div>
+        <!-- Genre -->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="genre" name="genreInput" 
+                 value="<%= work.genre || '' %>" placeholder="Genre">
+          <label for="genre">Genre</label>
+        </div>
 
-          <div class="form-group">
-            <label for="youTube">YouTube:</label>
-            <input type="text" id="youTube" name="youTube" value="<%= work.youTube %>" />
-          </div>
-        
-          <button type="submit">Save Changes</button>
-        </form>
+        <!-- Year Composed -->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="yearComposed" name="yearComposed"
+                 value="<%= work.yearComposed || '' %>" placeholder="Year Composed">
+          <label for="yearComposed">Year Composed</label>
+        </div>
 
-        <a class="back-button" href="/">Back to Home</a>
+        <!-- Catalogue -->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="catalogueSystem" name="catalogueSystem"
+                 value="<%= work.catalogueSystem || '' %>" placeholder="Catalogue System">
+          <label for="catalogueSystem">Catalogue System</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="catalogueNumber" name="catalogueNumber"
+                 value="<%= work.catalogueNumber || '' %>" placeholder="Catalogue Number">
+          <label for="catalogueNumber">Catalogue Number</label>
+        </div>
+
+        <!-- YouTube -->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="youTube" name="youTube"
+                 value="<%= work.youTube || '' %>" placeholder="YouTube link">
+          <label for="youTube">YouTube</label>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success btn-lg">Save Changes</button>
+        </div>
+      </form>
+
+      <!-- Back Button -->
+      <div class="text-center mt-4">
+        <a class="btn btn-outline-secondary" href="/">Back to Home</a>
       </div>
-    </section>
-  </body>
-</html>
+    </div>
+  </div>
+</div>

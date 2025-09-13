@@ -30,7 +30,10 @@ router.get("/", async (req, res) => {
 // === Add New Work Form ===
 router.get("/new", isSignedIn, async (req, res) => {
   const composers = await Composer.find();
-  res.render("works/new", { composers });
+  res.render("works/new", { 
+    composers,
+    bodyClass: "treble"  // wallpaper background
+  });
 });
 
 // === Create Work ===
@@ -137,8 +140,10 @@ router.get("/:workId/edit", isSignedIn, async (req, res) => {
     let work;
 
     if (/^[0-9a-fA-F]{24}$/.test(workId)) {
+      // MongoDB ObjectId
       work = await Work.findById(workId);
     } else {
+      // API id
       work = await Work.findOne({ apiId: workId });
     }
 
@@ -158,7 +163,12 @@ router.get("/:workId/edit", isSignedIn, async (req, res) => {
       });
     }
 
-    res.render("works/edit.ejs", { work, userWork });
+    res.render("works/edit.ejs", { 
+      work, 
+      userWork,
+      title: `Edit ${work.title || work.subtitle} | Classical DB`,
+      bodyClass: "treble"   // wallpaper background 
+    });
   } catch (err) {
     res.status(500).send(err.message);
   }

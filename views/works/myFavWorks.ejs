@@ -1,47 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css" />
-  <title>My Favorite Works</title>
-</head>
-<body>
-  <section class="treble">
-    <%- include('../partials/_navbar') %>
-    <p class="favs-text">All My Favorite Works</p>
+<div class="position-relative py-5 bg-light angled-bg">
+  <div class="container position-relative">
+    <h1 class="text-center mb-4">My Favorite Works</h1>
 
     <% if (works && works.length) { %>
-      <ul class="favs-page">
+      <div class="row g-4">
         <% works.forEach((work) => { %>
-          <li class="favs-page">
-            <div class="favs-page">
-              <p>
-                <a href="/works/<%= work.apiId %>">
-                  <%= work.title %>
-                </a>
-                <% if (work.composer) { %>
-                    By 
-                    <a href="/composers/<%= work.composer.apiId || work.composer._id %>">
-                      <%=
-                        work.composer.completeName ||
-                        work.composer.name ||
-                        work.composer.complete_name || 
-                        "(Unknown Composer)"
-                      %>
-                    </a>
-                  <% } else { %>
-                    <em>(Composer Pending)</em>
-                  <% } %>
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 shadow-sm">
+              
+              <!-- Card body with scoped stretched link -->
+              <div class="card-body text-center d-flex flex-column position-relative">
+                <h5 class="card-title mb-3">
+                  <a href="/works/<%= work.apiId || work._id %>" 
+                     class="stretched-link text-decoration-none text-dark">
+                    <%= work.title %>
+                  </a>
+                </h5>
 
-              </p>
+                <% if (work.genre) { %>
+                  <p class="card-text"><strong>Genre:</strong> <%= work.genre %></p>
+                <% } %>
+
+                <% if (work.yearComposed) { %>
+                  <p class="card-text"><strong>Year:</strong> <%= work.yearComposed %></p>
+                <% } %>
+
+                <% if (work.catalogueSystem) { %>
+                  <p class="card-text"><strong>Catalogue:</strong> 
+                    <%= work.catalogueSystem %> <%= work.catalogueNumber || '' %>
+                  </p>
+                <% } %>
+
+                <!-- YouTube preview -->
+                <% if (work.youTube) { 
+                     const embedUrl = work.youTube.replace("watch?v=", "embed/");
+                %>
+                  <div class="ratio ratio-16x9 mb-2">
+                    <iframe src="<%= embedUrl %>" 
+                            title="YouTube video player" 
+                            allowfullscreen></iframe>
+                  </div>
+                  <a href="<%= work.youTube %>" target="_blank" 
+                     class="btn btn-sm btn-outline-primary">
+                    Watch on YouTube
+                  </a>
+                <% } %>
+              </div>
+
+              <!-- Composer footer (safe, outside stretched link area) -->
+              <div class="card-footer text-center">
+                <% if (work.composer) { %>
+                  <small class="text-muted">
+                    By 
+                    <a href="/composers/<%= work.composer.apiId || work.composer._id %>" 
+                       class="text-decoration-none">
+                      <%= work.composer.completeName || work.composer.name || work.composer.complete_name || "(Unknown Composer)" %>
+                    </a>
+                  </small>
+                <% } else { %>
+                  <small class="text-muted"><em>(Composer Pending)</em></small>
+                <% } %>
+              </div>
+
             </div>
-          </li>
+          </div>
         <% }) %>
-      </ul>
+      </div>
     <% } else { %>
-      <p>You don’t have any favorite works yet.</p>
+      <div class="alert alert-info text-center mt-4">
+        You don’t have any favorite works yet.
+      </div>
     <% } %>
-  </section>
-</body>
-</html>
+  </div>
+</div>

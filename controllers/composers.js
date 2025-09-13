@@ -33,6 +33,7 @@ router.post('/', isSignedIn, async (req, res) => {
 });
 
 //see those composers
+//see those composers
 router.get('/recent', async (req, res) => {
   try {
     const recentComposers = await Composer.find()
@@ -41,12 +42,18 @@ router.get('/recent', async (req, res) => {
     const recentWorks = await Work.find()
       .sort({ createdAt: -1 }).limit(5);
 
-    res.render('composers/recent.ejs', { composers: recentComposers, works: recentWorks });
+    res.render('composers/recent.ejs', { 
+      composers: recentComposers, 
+      works: recentWorks,
+      title: "Recently Added | Classical DB",
+      bodyClass: "sparkly-classical"   // wallpaper background 
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error getting composer or work");
   }
 });
+
 
 
 //my fav composers
@@ -147,16 +154,17 @@ router.get('/search/local', async (req, res) => {
 
 
 ///edit
+///edit
 router.get('/:composerId/edit', isSignedIn, async (req, res) => {
   try {
     const { composerId } = req.params;
 
     let composer;
     if (/^[0-9a-fA-F]{24}$/.test(composerId)) {
-      // It's a MongoDB ObjectId--got letters and shit
+      // It's a MongoDB ObjectId
       composer = await Composer.findById(composerId);
     } else {
-      // It's an API id--cleaner
+      // It's an API id
       composer = await Composer.findOne({ apiId: composerId });
     }
 
@@ -175,7 +183,12 @@ router.get('/:composerId/edit', isSignedIn, async (req, res) => {
       });
     }
 
-    res.render('composers/edit.ejs', { composer, userComposer });
+    res.render('composers/edit.ejs', { 
+      composer, 
+      userComposer,
+      title: `Edit ${composer.completeName} | Classical DB`,
+      bodyClass: "treble"   // wallpaper background 
+    });
   } catch (err) {
     res.status(500).send(err.message);
   }

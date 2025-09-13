@@ -1,49 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Composer</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
+<div class="container py-5">
+  <div class="card shadow-lg mx-auto" style="max-width: 700px;">
+    <div class="card-body p-4">
+      <h1 class="text-center mb-3">Edit Composer</h1>
+      <p class="text-muted text-center mb-4">
+        <strong>Note:</strong> Use this form to update or add information about the composer.
+      </p>
 
-  <body>
-    <section class="treble">
-      <div class="edit-page">
-        <h1>Edit Composer</h1>
+      <!--  3-way check: _id (local), apiId (OpenOpus), or id (fallback) -->
+      <form action="/composers/<%= composer._id || composer.apiId || composer.id %>?_method=PUT" method="POST">
+        <input type="hidden" name="_method" value="PUT" />
+        <input type="hidden" name="composerId" value="<%= composer._id || composer.apiId || composer.id %>" />
 
-        <p><strong>Note:</strong> Use this form to update or add information about the composer.</p>
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="sex" name="sex" 
+                 value="<%= composer.sex || '' %>" placeholder="Sex">
+          <label for="sex">Sex</label>
+        </div>
 
-        <!-- ✅ 3-way check: _id (local), apiId (OpenOpus), or id (fallback) -->
-        <form action="/composers/<%= composer._id || composer.apiId || composer.id %>?_method=PUT" method="POST">
-          <input type="hidden" name="_method" value="PUT" />
-          <input type="hidden" name="composerId" value="<%= composer._id || composer.apiId || composer.id %>" />
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="nationality" name="nationality" 
+                 value="<%= composer.nationality || '' %>" placeholder="Nationality">
+          <label for="nationality">Nationality</label>
+        </div>
 
-          <div class="form-group">
-            <label for="sex">Sex:</label>
-            <input type="text" id="sex" name="sex" value="<%= composer.sex || '' %>" />
-          </div>
+        <div class="form-floating mb-3">
+          <textarea class="form-control" id="biography" name="biography" 
+                    style="height: 120px;" placeholder="Biography"><%= composer.biography || '' %></textarea>
+          <label for="biography">Biography</label>
+        </div>
 
-          <div class="form-group">
-            <label for="nationality">Nationality:</label>
-            <input type="text" id="nationality" name="nationality" value="<%= composer.nationality || '' %>" />
-          </div>
+        <div class="form-floating mb-3">
+          <textarea class="form-control" id="notes" name="notes" 
+                    style="height: 120px;" placeholder="Private notes"><%= (userComposer && userComposer.notes) ? userComposer.notes : '' %></textarea>
+          <label for="notes">Notes (only visible to you)</label>
+        </div>
 
-          <div class="form-group">
-            <label for="biography">Biography:</label>
-            <textarea id="biography" name="biography"><%= composer.biography || '' %></textarea>
-          </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success btn-lg">Save Changes</button>
+        </div>
+      </form>
 
-          <div class="form-group">
-            <label for="notes">Notes (only visible to you):</label>
-            <textarea id="notes" name="notes"><%= (userComposer && userComposer.notes) ? userComposer.notes : '' %></textarea>
-          </div>
-
-          <button type="submit">Save Changes</button>
-        </form>
-
-        <a class="back-button" href="/composers">Back to Composers</a>
+      <div class="text-center mt-4">
+        <a class="btn btn-outline-secondary" href="/composers">Back to Composers</a>
       </div>
-    </section>
-  </body>
-</html>
+    </div>
+  </div>
+</div>

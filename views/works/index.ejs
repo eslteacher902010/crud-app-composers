@@ -1,52 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/css/style.css" />
-  <title>All Works</title>
-</head>
-<body>
-  <section class="fiery-classical">
-    <%- include('../partials/_navbar') %>
-    <p>Search Results</p>
-   
-    <% if (works && works.length) { %>
-      <ul class="works-list">
-        <% works.forEach((work) => { %>
-          <li class="work-item">
-            <div>
-              <p class="work-text">
-                <a href="/works/<%= work.id || work.apiId %>" class="work-link">
-                  <%= work.title %>
-                </a>
-                <% if (work.composer) { %>
-                  By 
-                  <a href="/composers/<%= work.composer.id || work.composer.apiId %>" class="composer-link">
-                    <%= work.composer.complete_name || work.composer.completeName %>
-                  </a>
-                <% } %>
-              </p>
-            </div>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else if (!works && !newWork) { %>
-      <p>There are no works at this time.</p>
-    <% } %> 
+<div class="position-relative py-5 bg-light">
+  <div class="container">
+    <h1 class="text-center mb-4">All Works</h1>
 
-    <!-- Search input -->
-    <form action="/works/search" method="GET" class="search-form">
-      <input 
-        type="text" 
-        name="search" 
-        value="<%= search || '' %>" 
-        class="search-box" 
-        placeholder="Search works..." 
-      />
-      <input type="hidden" name="offset" value="<%= (offset || 0) + 20 %>" />
-      <button type="submit">Next</button>
-    </form>
-  </section>
-</body>
-</html>
+    <% if (works && works.length) { %>
+      <div class="row g-4">
+        <% works.forEach((work) => { %>
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex flex-column">
+                <!-- Work title link -->
+                <h5 class="card-title">
+                  <a href="/works/<%= work.id || work.apiId %>" 
+                     class="text-decoration-none text-dark">
+                    <%= work.title %>
+                  </a>
+                </h5>
+
+                <!-- Composer link -->
+                <% if (work.composer) { %>
+                  <p class="card-text text-muted mb-0">
+                    By 
+                    <a href="/composers/<%= work.composer.id || work.composer.apiId %>" 
+                       class="text-decoration-none">
+                      <%= work.composer.complete_name || work.composer.completeName %>
+                    </a>
+                  </p>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else if (!works && !newWork) { %>
+      <div class="alert alert-info text-center mt-4">
+        There are no works at this time.
+      </div>
+    <% } %>
+
+   <!-- Next button form -->
+<form action="/works/search" method="GET" class="text-center mt-5">
+  <input type="hidden" name="search" value="<%= search || '' %>" />
+  <input type="hidden" name="offset" value="<%= (offset || 0) + 20 %>" />
+
+  <button type="submit" class="btn btn-outline-primary">
+    Next →
+  </button>
+</form>
+
